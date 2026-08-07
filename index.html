@@ -125,13 +125,14 @@
   .empty-row td { text-align: center; color: var(--muted); padding: 14px; }
 
   /* 다단계 접수 */
-  .progress-bar { display: flex; gap: 6px; padding: 16px; background: #f5f8fc; margin-bottom: 0; }
-  .progress-step { flex: 1; height: 40px; border-radius: 8px; background: #dfe8f2; border: 1px solid var(--calc-border); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--muted); cursor: pointer; transition: all 0.2s; }
-  .progress-step.active { background: var(--brand); color: #fff; }
-  .progress-step.done { background: var(--ok-bg); border-color: var(--ok-border); color: var(--brand-dark); }
+  .progress-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 22px; background: #f5f8fc; margin-bottom: 0; border-bottom: 1px solid var(--border); }
+  .progress-bar::after { content: attr(data-progress); font-size: 14px; font-weight: 700; color: var(--text); }
+  .progress-step { display: none; }
+  .progress-step.active { display: none; }
+  .progress-step.done { display: none; }
 
-  .modal-container { background: var(--card); border: 1px solid var(--border); border-radius: 0 0 14px 14px; overflow: hidden; min-height: 500px; }
-  .modal-step { display: none !important; padding: 28px; }
+  .modal-container { background: var(--card); border: 1px solid var(--border); border-radius: 0 0 12px 12px; overflow: hidden; min-height: 600px; display: flex; flex-direction: column; }
+  .modal-step { display: none !important; padding: 32px 40px; flex: 1; overflow-y: auto; }
   .modal-step.active { display: block !important; animation: fadeIn 0.2s; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
@@ -148,11 +149,11 @@
   .modal-step-3 .form-part { padding: 28px; border-right: 1px solid var(--border); }
   .modal-step-3 .calc-part { padding: 28px; background: var(--calc-bg); }
 
-  .modal-nav { display: flex; gap: 10px; padding: 20px 28px; background: #f5f8fc; border-top: 1px solid var(--border); justify-content: flex-end; }
-  .modal-nav button { padding: 12px 24px; border-radius: 8px; font-weight: 700; border: none; cursor: pointer; }
+  .modal-nav { display: flex; gap: 12px; padding: 24px; background: #f5f8fc; border-top: 1px solid var(--border); justify-content: center; align-items: center; }
+  .modal-nav button { padding: 14px 32px; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; font-size: 15px; min-width: 120px; }
   .nav-prev { background: #fff; border: 1px solid var(--border); color: var(--text); }
-  .nav-prev:disabled { opacity: 0.5; cursor: not-allowed; }
-  .nav-next { background: var(--brand); color: #fff; flex: 1; max-width: 200px; }
+  .nav-prev:disabled { opacity: 0.4; cursor: not-allowed; }
+  .nav-next { background: var(--brand); color: #fff; min-width: 140px; }
   .nav-next:disabled { background: #a9b6c4; cursor: not-allowed; }
 </style>
 </head>
@@ -471,12 +472,7 @@
     document.querySelectorAll('.modal-step').forEach(el => el.classList.remove('active'));
     document.querySelector(`.modal-step[data-step="${step}"]`).classList.add('active');
 
-    document.querySelectorAll('.progress-step').forEach(el => el.classList.remove('active', 'done'));
-    document.querySelectorAll('.progress-step').forEach((el, idx) => {
-      const stepNum = idx + 1;
-      if (stepNum === step) el.classList.add('active');
-      else if (stepNum < step) el.classList.add('done');
-    });
+    document.querySelector('.progress-bar').innerHTML = `<div></div><div style="font-size:14px;font-weight:700;color:var(--text)">${step}/5</div>`;
 
     document.getElementById('prevBtn').disabled = step === 1;
     document.getElementById('nextBtn').textContent = step === 5 ? '접수 완료' : '다음';
