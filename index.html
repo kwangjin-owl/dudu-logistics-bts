@@ -277,22 +277,22 @@
 
           <div class="step-field" style="margin-bottom: 8px;">
             <label for="senderName2">이름 <span class="req">필수</span></label>
-            <input type="text" id="senderName2" placeholder="예: 김민준" onchange="formData.senderName = this.value">
+            <input type="text" id="senderName2" placeholder="예: 김민준" onchange="formData.senderName = this.value; updateNextButtonState()">
           </div>
 
           <div class="step-field" style="margin-bottom: 8px;">
             <label for="senderPhone2">전화번호 <span class="req">필수</span></label>
-            <input type="text" id="senderPhone2" placeholder="예: 010-1234-5678" oninput="autoFormatPhone(this)" onchange="formData.senderPhone = this.value">
+            <input type="text" id="senderPhone2" placeholder="예: 010-1234-5678" oninput="autoFormatPhone(this)" onchange="formData.senderPhone = this.value; updateNextButtonState()">
           </div>
 
           <div class="step-field" style="margin-bottom: 8px;">
             <label for="senderAddress2">주소 <span class="req">필수</span></label>
-            <input type="text" id="senderAddress2" placeholder="예: 서울시 강남구 테헤란로 123" onchange="formData.senderAddress = this.value">
+            <input type="text" id="senderAddress2" placeholder="예: 서울시 강남구 테헤란로 123" onchange="formData.senderAddress = this.value; updateNextButtonState()">
           </div>
 
           <div class="step-field">
             <label for="senderAddressDetail2">상세주소 <span class="req">필수</span></label>
-            <input type="text" id="senderAddressDetail2" placeholder="예: 456호" onchange="formData.senderAddressDetail = this.value">
+            <input type="text" id="senderAddressDetail2" placeholder="예: 456호" onchange="formData.senderAddressDetail = this.value; updateNextButtonState()">
           </div>
         </div>
 
@@ -302,27 +302,27 @@
 
           <div class="step-field" style="margin-bottom: 8px;">
             <label for="receiverName2">이름 <span class="req">필수</span></label>
-            <input type="text" id="receiverName2" placeholder="예: 이서연" onchange="formData.receiverName = this.value">
+            <input type="text" id="receiverName2" placeholder="예: 이서연" onchange="formData.receiverName = this.value; updateNextButtonState()">
           </div>
 
           <div class="step-field" style="margin-bottom: 8px;">
             <label for="receiverPhone2">전화번호 <span class="req">필수</span></label>
-            <input type="text" id="receiverPhone2" placeholder="예: 010-1234-5678" oninput="autoFormatPhone(this)" onchange="formData.receiverPhone = this.value">
+            <input type="text" id="receiverPhone2" placeholder="예: 010-1234-5678" oninput="autoFormatPhone(this)" onchange="formData.receiverPhone = this.value; updateNextButtonState()">
           </div>
 
           <div class="step-field" style="margin-bottom: 8px;">
             <label for="receiverAddress2">주소 <span class="req">필수</span></label>
-            <input type="text" id="receiverAddress2" placeholder="예: 서울시 강남구 테헤란로 123" onchange="formData.receiverAddress = this.value">
+            <input type="text" id="receiverAddress2" placeholder="예: 서울시 강남구 테헤란로 123" onchange="formData.receiverAddress = this.value; updateNextButtonState()">
           </div>
 
           <div class="step-field">
             <label for="receiverAddressDetail2">상세주소 <span class="req">필수</span></label>
-            <input type="text" id="receiverAddressDetail2" placeholder="예: 456호" onchange="formData.receiverAddressDetail = this.value">
+            <input type="text" id="receiverAddressDetail2" placeholder="예: 456호" onchange="formData.receiverAddressDetail = this.value; updateNextButtonState()">
           </div>
 
           <div class="step-field" style="margin-top: 10px;">
             <label for="receiverArea2">도착 지역 <span class="req">필수</span></label>
-            <input type="text" id="receiverArea2" placeholder="예: 서울, 제주, 울산" oninput="updateRegion()" onchange="formData.receiverArea = this.value" autocomplete="off">
+            <input type="text" id="receiverArea2" placeholder="예: 서울, 제주, 울산" oninput="updateRegion()" onchange="formData.receiverArea = this.value; updateNextButtonState()" autocomplete="off">
           </div>
         </div>
 
@@ -356,7 +356,7 @@
 
           <div class="field wide">
             <label for="itemName3">물품명 <span class="req">필수</span></label>
-            <input type="text" id="itemName3" placeholder="예: 이불" oninput="recalc()">
+            <input type="text" id="itemName3" placeholder="예: 이불" oninput="recalc()" onchange="updateNextButtonState()">
             <div class="inline-warning" id="bannedWarning3"></div>
           </div>
 
@@ -367,7 +367,7 @@
               <button class="tab-btn" onclick="switchWeightMode('scale')" id="tab-scale">🔴 자동 저울</button>
             </div>
             <div id="manualWeightInput" style="display:block">
-              <input type="number" id="weightKg3" placeholder="예: 3.0" step="0.01" min="0.01" max="100" oninput="validateWeight(this); recalc()" onchange="formData.weight = this.value">
+              <input type="number" id="weightKg3" placeholder="예: 3.0" step="0.01" min="0.01" max="100" oninput="validateWeight(this); recalc()" onchange="formData.weight = this.value; updateNextButtonState()">
             </div>
             <div id="scaleWeightInput" style="display:none">
               <div style="text-align:center;padding:20px;color:var(--muted)">
@@ -381,9 +381,9 @@
           <div class="field dims">
             <label>가로 x 세로 x 높이 (cm) <span class="req">필수</span></label>
             <div class="row3">
-              <input type="number" id="widthCm3" placeholder="가로" step="1" min="1" max="200" oninput="validateDim(this); recalc()">
-              <input type="number" id="heightCm3" placeholder="세로" step="1" min="1" max="200" oninput="validateDim(this); recalc()">
-              <input type="number" id="depthCm3" placeholder="높이" step="1" min="1" max="200" oninput="validateDim(this); recalc()">
+              <input type="number" id="widthCm3" placeholder="가로" step="1" min="1" max="200" oninput="validateDim(this); recalc()" onchange="updateNextButtonState()">
+              <input type="number" id="heightCm3" placeholder="세로" step="1" min="1" max="200" oninput="validateDim(this); recalc()" onchange="updateNextButtonState()">
+              <input type="number" id="depthCm3" placeholder="높이" step="1" min="1" max="200" oninput="validateDim(this); recalc()" onchange="updateNextButtonState()">
             </div>
           </div>
 
@@ -464,7 +464,7 @@
       <!-- 약관 동의 -->
       <div class="agreement-box">
         <div class="agreement-item required">
-          <input type="checkbox" id="agree-privacy" onchange="checkAgreement()">
+          <input type="checkbox" id="agree-privacy" onchange="checkAgreement(); updateNextButtonState()">
           <label for="agree-privacy">개인정보처리방침에 동의합니다 <span class="req">필수</span></label>
         </div>
         <div class="agreement-item optional">
