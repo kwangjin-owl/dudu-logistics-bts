@@ -130,23 +130,44 @@
   .progress-step.active { background: var(--brand); color: #fff; }
   .progress-step.done { color: var(--brand-dark); }
 
-  .modal-container { background: var(--card); border: 1px solid var(--border); border-radius: 0 0 12px 12px; overflow: hidden; min-height: 600px; display: flex; flex-direction: column; }
-  .modal-step { display: none !important; padding: 32px 40px; flex: 1; overflow-y: auto; }
+  .modal-container { background: var(--card); border: 1px solid var(--border); border-radius: 0 0 12px 12px; overflow: hidden; min-height: auto; display: flex; flex-direction: column; }
+  .modal-step { display: none !important; padding: 28px 28px; flex: 1; overflow-y: auto; }
   .modal-step.active { display: block !important; animation: fadeIn 0.2s; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-  .step-title { font-size: 20px; font-weight: 800; margin-bottom: 24px; color: var(--text); }
-  .step-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .step-title { font-size: 18px; font-weight: 800; margin-bottom: 20px; color: var(--text); }
+  .step-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
   .step-field { grid-column: 1 / -1; }
 
-  .choice-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-  .choice-btn { padding: 16px; border: 2px solid var(--border); border-radius: 10px; background: #fff; cursor: pointer; text-align: center; font-size: 14px; font-weight: 600; transition: all 0.2s; }
+  .choice-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .choice-btn { padding: 18px 12px; border: 2px solid var(--border); border-radius: 10px; background: #fff; cursor: pointer; text-align: center; font-size: 13px; font-weight: 600; transition: all 0.2s; }
   .choice-btn:hover { border-color: var(--brand); }
   .choice-btn.selected { border-color: var(--brand); background: var(--ok-bg); color: var(--brand-dark); }
 
   .modal-step-3.active { display: grid !important; grid-template-columns: 1.15fr 1fr; gap: 0; }
-  .modal-step-3 .form-part { padding: 28px; border-right: 1px solid var(--border); }
-  .modal-step-3 .calc-part { padding: 28px; background: var(--calc-bg); }
+  .modal-step-3 .form-part { padding: 24px; border-right: 1px solid var(--border); }
+  .modal-step-3 .calc-part { padding: 24px; background: var(--calc-bg); }
+
+  @media (max-width: 1000px) {
+    .modal-step { padding: 22px 20px; }
+    .step-title { font-size: 16px; margin-bottom: 16px; }
+    .choice-grid { gap: 10px; }
+    .choice-btn { padding: 16px 10px; font-size: 12px; }
+    .modal-step-3.active { grid-template-columns: 1fr; }
+    .modal-step-3 .form-part { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 12px 12px 50px; }
+    .progress-bar { padding: 10px 8px; gap: 6px; }
+    .progress-step { padding: 5px 8px; font-size: 11px; }
+    .modal-step { padding: 18px 16px; }
+    .step-title { font-size: 15px; margin-bottom: 14px; }
+    .choice-grid { grid-template-columns: 1fr; gap: 10px; }
+    .choice-btn { padding: 14px; font-size: 13px; }
+    .modal-nav { padding: 16px; }
+    .modal-nav button { padding: 12px 20px; font-size: 14px; min-width: auto; }
+  }
 
   .modal-nav { display: flex; gap: 12px; padding: 24px; background: #f5f8fc; border-top: 1px solid var(--border); justify-content: center; align-items: center; }
   .modal-nav button { padding: 14px 32px; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; font-size: 15px; min-width: 120px; }
