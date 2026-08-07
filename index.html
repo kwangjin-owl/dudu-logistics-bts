@@ -274,9 +274,14 @@
             <input type="tel" id="senderPhone2" placeholder="예: 010-1234-5678" onchange="formData.senderPhone = this.value; autoFormatPhone(this)">
           </div>
 
-          <div class="step-field">
+          <div class="step-field" style="margin-bottom: 8px;">
             <label for="senderAddress2">주소 <span class="req">필수</span></label>
             <input type="text" id="senderAddress2" placeholder="예: 서울시 강남구 테헤란로 123" onchange="formData.senderAddress = this.value">
+          </div>
+
+          <div class="step-field">
+            <label for="senderAddressDetail2">상세주소 <span class="req">필수</span></label>
+            <input type="text" id="senderAddressDetail2" placeholder="예: 456호" onchange="formData.senderAddressDetail = this.value">
           </div>
         </div>
 
@@ -294,16 +299,15 @@
             <input type="tel" id="receiverPhone2" placeholder="예: 010-1234-5678" onchange="formData.receiverPhone = this.value; autoFormatPhone(this)">
           </div>
 
-          <div class="step-field">
+          <div class="step-field" style="margin-bottom: 8px;">
             <label for="receiverAddress2">주소 <span class="req">필수</span></label>
             <input type="text" id="receiverAddress2" placeholder="예: 서울시 강남구 테헤란로 123" onchange="formData.receiverAddress = this.value">
           </div>
-        </div>
 
-        <!-- 상세주소 & 요청사항 -->
-        <div class="step-field" style="margin-top: 10px;">
-          <label for="receiverAddressDetail2">상세주소 <span class="req">필수</span></label>
-          <input type="text" id="receiverAddressDetail2" placeholder="예: 456호" onchange="formData.receiverAddressDetail = this.value">
+          <div class="step-field">
+            <label for="receiverAddressDetail2">상세주소 <span class="req">필수</span></label>
+            <input type="text" id="receiverAddressDetail2" placeholder="예: 456호" onchange="formData.receiverAddressDetail = this.value">
+          </div>
         </div>
 
         <div class="step-field">
@@ -779,10 +783,11 @@
       if (!document.getElementById('senderName2').value) errors.push('보내는 분 이름을 입력하세요.');
       if (!document.getElementById('senderPhone2').value) errors.push('보내는 분 전화번호를 입력하세요.');
       if (!document.getElementById('senderAddress2').value) errors.push('보내는 분 주소를 입력하세요.');
+      if (!document.getElementById('senderAddressDetail2').value) errors.push('보내는 분 상세주소를 입력하세요.');
       if (!document.getElementById('receiverName2').value) errors.push('받는 분 이름을 입력하세요.');
       if (!document.getElementById('receiverPhone2').value) errors.push('받는 분 전화번호를 입력하세요.');
       if (!document.getElementById('receiverAddress2').value) errors.push('받는 분 주소를 입력하세요.');
-      if (!document.getElementById('receiverAddressDetail2').value) errors.push('상세주소를 입력하세요.');
+      if (!document.getElementById('receiverAddressDetail2').value) errors.push('받는 분 상세주소를 입력하세요.');
     }
     if (currentStep === 3) {
       if (!document.getElementById('itemName3').value) errors.push('물품명을 입력하세요.');
