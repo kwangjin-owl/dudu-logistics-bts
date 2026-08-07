@@ -408,7 +408,7 @@
 
 <script>
   // ============================================================
-  // 다단계 접수 상태 관리
+  // 다단계 접수 상태 관리 + 라우팅
   // ============================================================
   let currentStep = 1;
   const formData = {
@@ -420,6 +420,17 @@
     trackingNo: null
   };
 
+  function getStepFromHash() {
+    const hash = window.location.hash;
+    const match = hash.match(/\/step\/(\d+)/);
+    return match ? parseInt(match[1]) : 1;
+  }
+
+  function navigateToStep(step) {
+    if (step < 1 || step > 5) return;
+    window.location.hash = `/step/${step}`;
+  }
+
   function selectReceptionType(type) {
     formData.receptionType = type;
     document.querySelectorAll('.choice-btn').forEach(btn => btn.classList.remove('selected'));
@@ -430,12 +441,10 @@
     if (!validateCurrentStep()) return;
     if (currentStep < 5) {
       if (currentStep === 2) {
-        // 2단계 완료: 기본정보 저장
         formData.branch = document.getElementById('branch2').value;
         formData.senderName = document.getElementById('senderName2').value;
         formData.receiverName = document.getElementById('receiverName2').value;
       } else if (currentStep === 3) {
-        // 3단계 완료: 물품정보 저장
         formData.itemName = document.getElementById('itemName3').value;
         formData.weightKg = parseFloat(document.getElementById('weightKg3').value) || null;
         formData.widthCm = parseFloat(document.getElementById('widthCm3').value) || null;
@@ -445,8 +454,7 @@
         formData.staffConfirm = document.getElementById('staffConfirm3').checked;
         updateSummary();
       }
-      currentStep++;
-      showStep(currentStep);
+      navigateToStep(currentStep + 1);
     } else if (currentStep === 5) {
       submitShipment();
     }
@@ -454,12 +462,12 @@
 
   function goToPreviousStep() {
     if (currentStep > 1) {
-      currentStep--;
-      showStep(currentStep);
+      navigateToStep(currentStep - 1);
     }
   }
 
   function showStep(step) {
+    currentStep = step;
     document.querySelectorAll('.modal-step').forEach(el => el.classList.remove('active'));
     document.querySelector(`.modal-step[data-step="${step}"]`).classList.add('active');
 
@@ -472,6 +480,7 @@
 
     document.getElementById('prevBtn').disabled = step === 1;
     document.getElementById('nextBtn').textContent = step === 5 ? '접수 완료' : '다음';
+    window.scrollTo(0, 0);
   }
 
   function validateCurrentStep() {
@@ -992,8 +1001,14 @@
     formData.staffConfirm = false;
   }
 
+  window.addEventListener('hashchange', () => {
+    const step = getStepFromHash();
+    showStep(step);
+  });
+
   renderList();
-  showStep(1);
+  const initialStep = getStepFromHash();
+  showStep(initialStep);
 </script>
 </body>
 </html>
