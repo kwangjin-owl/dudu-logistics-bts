@@ -68,9 +68,14 @@
   .field.wide, .field.dims { grid-column: 1 / -1; }
   .field label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin: 12px 0 6px; }
   .req { color: var(--bad-text); font-weight: 700; font-size: 11px; }
-  input[type="text"], input[type="number"], select {
+  input[type="text"], input[type="number"], input[type="tel"], select {
     width: 100%; padding: 11px 12px; border: 1px solid var(--border); border-radius: 8px;
     font-size: 15px; background: #fff; font-family: inherit;
+  }
+  select { cursor: pointer; }
+  textarea {
+    width: 100%; padding: 11px 12px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 14px; background: #fff; font-family: inherit; resize: vertical; min-height: 80px;
   }
   .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
   .inline-warning { min-height: 18px; margin-top: 6px; font-size: 12.5px; }
@@ -143,6 +148,14 @@
   .choice-btn { padding: 18px 12px; border: 2px solid var(--border); border-radius: 10px; background: #fff; cursor: pointer; text-align: center; font-size: 13px; font-weight: 600; transition: all 0.2s; }
   .choice-btn:hover { border-color: var(--brand); }
   .choice-btn.selected { border-color: var(--brand); background: var(--ok-bg); color: var(--brand-dark); }
+
+  .tab-group { display: flex; gap: 8px; margin-bottom: 12px; }
+  .tab-btn { flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 6px; background: #fff; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--muted); transition: all 0.2s; }
+  .tab-btn.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+  .tab-btn:hover { border-color: var(--brand); }
+
+  .info-box { background: #f5f8fc; border: 1px solid var(--calc-border); border-radius: 8px; padding: 10px 12px; font-size: 13px; color: var(--text); margin-bottom: 12px; }
+  .info-label { display: block; color: var(--muted); font-size: 11px; font-weight: 600; margin-bottom: 4px; }
 
   .modal-step-3.active { display: grid !important; grid-template-columns: 1.15fr 1fr; gap: 0; }
   .modal-step-3 .form-part { padding: 24px; border-right: 1px solid var(--border); }
@@ -218,15 +231,46 @@
       <div class="step-grid">
         <div class="step-field">
           <label for="branch2">접수 지점 <span class="req">필수</span></label>
-          <input type="text" id="branch2" placeholder="서울지점" autocomplete="off">
+          <select id="branch2" onchange="formData.branch = this.value">
+            <option value="">선택하세요</option>
+            <option value="서울지점">서울지점</option>
+            <option value="용산지점">용산지점</option>
+            <option value="대전지점">대전지점</option>
+            <option value="진주지점">진주지점</option>
+            <option value="거제지점">거제지점</option>
+            <option value="울산지점">울산지점</option>
+          </select>
         </div>
+
         <div class="step-field">
           <label for="senderName2">보내는 분 이름 <span class="req">필수</span></label>
-          <input type="text" id="senderName2" placeholder="예: 김민준">
+          <input type="text" id="senderName2" placeholder="예: 김민준" onchange="formData.senderName = this.value">
         </div>
+
         <div class="step-field">
           <label for="receiverName2">받는 분 이름 <span class="req">필수</span></label>
-          <input type="text" id="receiverName2" placeholder="예: 이서연">
+          <input type="text" id="receiverName2" placeholder="예: 이서연" onchange="formData.receiverName = this.value">
+        </div>
+
+        <div class="step-field">
+          <label for="receiverPhone2">받는 분 전화번호 <span class="req">필수</span></label>
+          <input type="tel" id="receiverPhone2" placeholder="예: 010-1234-5678" onchange="formData.receiverPhone = this.value; autoFormatPhone(this)">
+        </div>
+
+        <div class="step-field">
+          <label for="receiverAddress2">받는 분 주소 <span class="req">필수</span></label>
+          <input type="text" id="receiverAddress2" placeholder="예: 서울시 강남구 테헤란로 123" onchange="formData.receiverAddress = this.value">
+        </div>
+
+        <div class="step-field">
+          <label for="receiverAddressDetail2">상세주소 <span class="req">필수</span></label>
+          <input type="text" id="receiverAddressDetail2" placeholder="예: 456호" onchange="formData.receiverAddressDetail = this.value">
+        </div>
+
+        <div class="step-field wide">
+          <label for="specialRequest2">배송 요청사항 <span style="color:var(--muted);font-size:11px;font-weight:400">(선택)</span></label>
+          <textarea id="specialRequest2" placeholder="예: 부재중 시 현관에 놔두세요" onchange="formData.specialRequest = this.value"></textarea>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px" id="charCount2">0/200</div>
         </div>
       </div>
     </div>
@@ -242,11 +286,23 @@
             <div class="inline-warning" id="bannedWarning3"></div>
           </div>
 
-          <div class="field">
-            <label for="weightKg3">실제 무게 (kg) <span class="req">필수</span></label>
-            <input type="number" id="weightKg3" placeholder="예: 3.0" step="any" min="0.01" max="100" oninput="recalc()">
+          <div class="field wide">
+            <label>실제 무게 (kg) <span class="req">필수</span></label>
+            <div class="tab-group">
+              <button class="tab-btn active" onclick="switchWeightMode('manual')" id="tab-manual">수동 입력</button>
+              <button class="tab-btn" onclick="switchWeightMode('scale')" id="tab-scale">🔴 자동 저울</button>
+            </div>
+            <div id="manualWeightInput" style="display:block">
+              <input type="number" id="weightKg3" placeholder="예: 3.0" step="any" min="0.01" max="100" oninput="recalc()" onchange="formData.weight = this.value">
+            </div>
+            <div id="scaleWeightInput" style="display:none">
+              <div style="text-align:center;padding:20px;color:var(--muted)">
+                <div style="margin-bottom:10px">저울에 물품을 올려놓으세요</div>
+                <div id="scaleLoading" style="display:none">🔄 측정 중...</div>
+                <div id="scaleResult" style="display:none;font-size:18px;font-weight:800;color:var(--brand)"></div>
+              </div>
+            </div>
           </div>
-          <div class="field"></div>
 
           <div class="field dims">
             <label>가로 x 세로 x 높이 (cm) <span class="req">필수</span></label>
@@ -259,7 +315,14 @@
 
           <div class="field wide">
             <label for="receiverArea3">도착 지역 <span class="req">필수</span></label>
-            <input type="text" id="receiverArea3" oninput="recalc()" placeholder="서울" autocomplete="off">
+            <input type="text" id="receiverArea3" oninput="recalc();updateRegion()" onchange="formData.receiverArea = this.value" placeholder="예: 서울, 제주, 울릉도" autocomplete="off">
+          </div>
+
+          <div class="field wide">
+            <div class="info-box">
+              <span class="info-label">배송 권역 (자동 판정)</span>
+              <span id="regionDisplay" style="font-weight:600;color:var(--brand)">입력 후 표시됩니다</span>
+            </div>
           </div>
         </div>
 
@@ -434,10 +497,10 @@
   let currentStep = 1;
   const formData = {
     receptionType: null,
-    branch: '', senderName: '', receiverName: '',
-    itemName: '', weightKg: null, widthCm: null, heightCm: null, depthCm: null,
-    receiverArea: '', staffConfirm: false,
-    billedWeightKg: null, sizeGrade: null, price: null, regionType: null, etaDate: null,
+    branch: '', senderName: '', receiverName: '', receiverPhone: '', receiverAddress: '', receiverAddressDetail: '', specialRequest: '',
+    itemName: '', weightKg: null, weight: null, weightMode: 'manual', widthCm: null, heightCm: null, depthCm: null,
+    receiverArea: '', regionType: 'general', staffConfirm: false,
+    billedWeightKg: null, sizeGrade: null, price: null, etaDate: null,
     trackingNo: null
   };
 
@@ -734,6 +797,55 @@
         ${cell('일반')}${cell('제주')}${cell('도서산간')}
       </tr>`;
     }).join('');
+  }
+
+  // 전화번호 자동 하이픈 추가 (010-1234-5678 형식)
+  function autoFormatPhone(el) {
+    let val = el.value.replace(/\D/g, '');
+    if (val.length > 11) val = val.slice(0, 11);
+    if (val.length >= 10) {
+      val = val.slice(0, 3) + '-' + val.slice(3, 7) + '-' + val.slice(7);
+    } else if (val.length >= 4) {
+      val = val.slice(0, 3) + '-' + val.slice(3);
+    }
+    el.value = val;
+  }
+
+  // 무게 입력 방식 전환 (수동 vs 자동 저울)
+  function switchWeightMode(mode) {
+    formData.weightMode = mode;
+    document.getElementById('tab-manual').classList.toggle('active', mode === 'manual');
+    document.getElementById('tab-scale').classList.toggle('active', mode === 'scale');
+    document.getElementById('manualWeightInput').style.display = mode === 'manual' ? 'block' : 'none';
+    document.getElementById('scaleWeightInput').style.display = mode === 'scale' ? 'block' : 'none';
+    if (mode === 'scale') {
+      document.getElementById('scaleLoading').style.display = 'block';
+      document.getElementById('scaleResult').style.display = 'none';
+      // 실제로는 여기서 저울과 통신 (시뮬레이션: 2초 후)
+      setTimeout(() => {
+        const mockWeight = (Math.random() * 20 + 1).toFixed(1);
+        document.getElementById('scaleLoading').style.display = 'none';
+        document.getElementById('scaleResult').style.display = 'block';
+        document.getElementById('scaleResult').textContent = mockWeight + ' kg ✓';
+        document.getElementById('weightKg3').value = mockWeight;
+        formData.weightKg = parseFloat(mockWeight);
+        recalc();
+      }, 2000);
+    }
+  }
+
+  // 도착 지역 입력 → 권역 자동 판정 (규정 §2)
+  function updateRegion() {
+    const area = (document.getElementById('receiverArea3').value || '').trim();
+    let region = '일반';
+    if (area.includes('제주')) {
+      region = '제주';
+    } else if (area.includes('울릉') || area.includes('백령') || area.includes('흑산') || area.includes('거문') || area.includes('추자')) {
+      region = '도서산간';
+    }
+    formData.regionType = region;
+    document.getElementById('regionDisplay').textContent = region;
+    recalc();
   }
 
   function renderCalcPending(suffix = '') {
