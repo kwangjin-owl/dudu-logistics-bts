@@ -277,7 +277,7 @@
 
           <div class="step-field" style="margin-bottom: 8px;">
             <label for="senderName2">이름 <span class="req">필수</span></label>
-            <input type="text" id="senderName2" placeholder="예: 김민준" onchange="formData.senderName = this.value; updateNextButtonState()">
+            <input type="text" id="senderName2" placeholder="예: 김민준" onchange="formData.senderName = this.value; updateNextButtonState()" oninput="updateNextButtonState()">
           </div>
 
           <div class="step-field" style="margin-bottom: 8px;">
@@ -735,23 +735,31 @@
       document.getElementById('heightCm3').value = formData.heightCm || '';
       document.getElementById('depthCm3').value = formData.depthCm || '';
     } else if (step === 4) {
-      updateSummary();
+      try {
+        updateSummary();
+      } catch (e) {
+        console.error('updateSummary 에러:', e);
+      }
     }
     window.scrollTo(0, 0);
   }
 
   function updateSummary() {
     const set = (id, val) => {
-      const el = document.getElementById(id);
-      if (el) el.textContent = val;
+      try {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val || '-';
+      } catch (e) {
+        console.warn(`요소 ${id} 설정 오류:`, e);
+      }
     };
-    set('summary-sender', formData.senderName || '-');
-    set('summary-sender-phone', formData.senderPhone || '-');
-    set('summary-sender-address', (formData.senderAddress || '-') + (formData.senderAddressDetail ? `, ${formData.senderAddressDetail}` : ''));
-    set('summary-receiver', formData.receiverName || '-');
-    set('summary-receiver-phone', formData.receiverPhone || '-');
-    set('summary-receiver-address', (formData.receiverAddress || '-') + (formData.receiverAddressDetail ? `, ${formData.receiverAddressDetail}` : ''));
-    set('summary-item', formData.itemName || '-');
+    set('summary-sender', formData.senderName);
+    set('summary-sender-phone', formData.senderPhone);
+    set('summary-sender-address', (formData.senderAddress || '') + (formData.senderAddressDetail ? ` ${formData.senderAddressDetail}` : ''));
+    set('summary-receiver', formData.receiverName);
+    set('summary-receiver-phone', formData.receiverPhone);
+    set('summary-receiver-address', (formData.receiverAddress || '') + (formData.receiverAddressDetail ? ` ${formData.receiverAddressDetail}` : ''));
+    set('summary-item', formData.itemName);
     const weightSize = (formData.billedWeightKg ? formData.billedWeightKg.toFixed(2) : formData.weightKg || '-') + (formData.weightKg ? 'kg' : '');
     const sizeStr = (formData.widthCm && formData.heightCm && formData.depthCm) ? `${formData.widthCm}×${formData.heightCm}×${formData.depthCm}cm` : '-';
     set('summary-weight-size', weightSize + ' / ' + sizeStr);
