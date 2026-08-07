@@ -656,6 +656,7 @@
     formData.receptionType = type;
     document.querySelectorAll('.choice-btn').forEach(btn => btn.classList.remove('selected'));
     event.target.closest('.choice-btn').classList.add('selected');
+    updateNextButtonState();
   }
 
   function goToNextStep() {
