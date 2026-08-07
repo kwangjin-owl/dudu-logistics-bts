@@ -260,7 +260,7 @@
         <!-- 접수 지점 -->
         <div class="step-field">
           <label for="branch2">접수 지점 <span class="req">필수</span></label>
-          <select id="branch2" onchange="formData.branch = this.value">
+          <select id="branch2" onchange="formData.branch = this.value; updateNextButtonState()">
             <option value="">선택하세요</option>
             <option value="서울지점">서울지점</option>
             <option value="용산지점">용산지점</option>
@@ -282,7 +282,7 @@
 
           <div class="step-field" style="margin-bottom: 8px;">
             <label for="senderPhone2">전화번호 <span class="req">필수</span></label>
-            <input type="tel" id="senderPhone2" placeholder="예: 010-1234-5678" onchange="formData.senderPhone = this.value; autoFormatPhone(this)">
+            <input type="text" id="senderPhone2" placeholder="예: 010-1234-5678" oninput="autoFormatPhone(this)" onchange="formData.senderPhone = this.value">
           </div>
 
           <div class="step-field" style="margin-bottom: 8px;">
@@ -307,7 +307,7 @@
 
           <div class="step-field" style="margin-bottom: 8px;">
             <label for="receiverPhone2">전화번호 <span class="req">필수</span></label>
-            <input type="tel" id="receiverPhone2" placeholder="예: 010-1234-5678" onchange="formData.receiverPhone = this.value; autoFormatPhone(this)">
+            <input type="text" id="receiverPhone2" placeholder="예: 010-1234-5678" oninput="autoFormatPhone(this)" onchange="formData.receiverPhone = this.value">
           </div>
 
           <div class="step-field" style="margin-bottom: 8px;">
@@ -711,7 +711,7 @@
     });
 
     document.getElementById('prevBtn').disabled = step === 1;
-    document.getElementById('nextBtn').disabled = step === 4 && !document.getElementById('agree-privacy').checked;
+    updateNextButtonState();
     document.getElementById('nextBtn').textContent = step === 4 ? '접수 완료' : (step === 5 ? '접수 완료' : '다음');
 
     if (step === 2) {
@@ -758,9 +758,32 @@
     set('summary-eta-region', (formData.etaDate || '-') + ' / ' + (formData.regionType || '-'));
   }
 
+  function updateNextButtonState() {
+    const nextBtn = document.getElementById('nextBtn');
+    let canProceed = true;
+
+    if (currentStep === 1) {
+      canProceed = !!formData.receptionType;
+    } else if (currentStep === 2) {
+      canProceed = !!(document.getElementById('branch2').value &&
+        document.getElementById('senderName2').value && document.getElementById('senderPhone2').value &&
+        document.getElementById('senderAddress2').value && document.getElementById('senderAddressDetail2').value &&
+        document.getElementById('receiverName2').value && document.getElementById('receiverPhone2').value &&
+        document.getElementById('receiverAddress2').value && document.getElementById('receiverAddressDetail2').value &&
+        document.getElementById('receiverArea2').value);
+    } else if (currentStep === 3) {
+      canProceed = !!(document.getElementById('itemName3').value &&
+        document.getElementById('weightKg3').value &&
+        document.getElementById('widthCm3').value && document.getElementById('heightCm3').value &&
+        document.getElementById('depthCm3').value && !document.getElementById('errorBox3').innerHTML);
+    } else if (currentStep === 4) {
+      canProceed = !!document.getElementById('agree-privacy').checked;
+    }
+    nextBtn.disabled = !canProceed;
+  }
+
   function checkAgreement() {
-    const agreedPrivacy = document.getElementById('agree-privacy').checked;
-    document.getElementById('nextBtn').disabled = !agreedPrivacy;
+    updateNextButtonState();
   }
 
   function copyTrackingNo() {
