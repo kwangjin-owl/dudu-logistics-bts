@@ -142,8 +142,8 @@
   .progress-step.active { background: var(--brand); color: #fff; }
   .progress-step.done { color: var(--brand-dark); }
 
-  .modal-container { background: var(--card); border: 1px solid var(--border); border-radius: 0 0 12px 12px; overflow: hidden; height: 700px; display: flex; flex-direction: column; }
-  .modal-step { display: none !important; padding: 24px 20px; height: 700px; overflow-y: auto; }
+  .modal-container { background: var(--card); border: 1px solid var(--border); border-radius: 0 0 12px 12px; overflow: hidden; height: 850px; display: flex; flex-direction: column; }
+  .modal-step { display: none !important; padding: 24px 20px; height: 850px; overflow-y: auto; }
   .modal-step.active { display: block !important; animation: fadeIn 0.2s; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
@@ -169,9 +169,7 @@
   .modal-step-3 .calc-part { padding: 16px 0; background: transparent; margin-top: 16px; border-top: 1px solid var(--border); }
   .modal-step-3 .calc-part h2 { font-size: 16px; margin: 0 0 12px; }
 
-  #calcSteps3 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .calc-step { grid-column: span 1; }
-  @media (max-width: 700px) { #calcSteps3 { grid-template-columns: 1fr; } }
+  #calcSteps3 { display: flex; flex-direction: column; gap: 10px; }
 
   @media (max-width: 1000px) {
     .modal-step { padding: 22px 20px; }
@@ -369,7 +367,7 @@
               <button class="tab-btn" onclick="switchWeightMode('scale')" id="tab-scale">🔴 자동 저울</button>
             </div>
             <div id="manualWeightInput" style="display:block">
-              <input type="number" id="weightKg3" placeholder="예: 3.0" step="any" min="0.01" max="100" oninput="recalc()" onchange="formData.weight = this.value">
+              <input type="number" id="weightKg3" placeholder="예: 3.0" step="0.01" min="0.01" max="100" oninput="validateWeight(this); recalc()" onchange="formData.weight = this.value">
             </div>
             <div id="scaleWeightInput" style="display:none">
               <div style="text-align:center;padding:20px;color:var(--muted)">
@@ -383,9 +381,9 @@
           <div class="field dims">
             <label>가로 x 세로 x 높이 (cm) <span class="req">필수</span></label>
             <div class="row3">
-              <input type="number" id="widthCm3" placeholder="가로" step="any" min="1" max="200" oninput="recalc()">
-              <input type="number" id="heightCm3" placeholder="세로" step="any" min="1" max="200" oninput="recalc()">
-              <input type="number" id="depthCm3" placeholder="높이" step="any" min="1" max="200" oninput="recalc()">
+              <input type="number" id="widthCm3" placeholder="가로" step="1" min="1" max="200" oninput="validateDim(this); recalc()">
+              <input type="number" id="heightCm3" placeholder="세로" step="1" min="1" max="200" oninput="validateDim(this); recalc()">
+              <input type="number" id="depthCm3" placeholder="높이" step="1" min="1" max="200" oninput="validateDim(this); recalc()">
             </div>
           </div>
 
@@ -676,6 +674,7 @@
         formData.receiverArea = document.getElementById('receiverArea2').value;
         formData.specialRequest = document.getElementById('specialRequest2').value;
       } else if (currentStep === 3) {
+        formData.itemCategory = document.getElementById('itemCategory3').value;
         formData.itemName = document.getElementById('itemName3').value;
         formData.weightKg = parseFloat(document.getElementById('weightKg3').value) || null;
         formData.widthCm = parseFloat(document.getElementById('widthCm3').value) || null;
@@ -715,33 +714,48 @@
     document.getElementById('nextBtn').disabled = step === 4 && !document.getElementById('agree-privacy').checked;
     document.getElementById('nextBtn').textContent = step === 4 ? '접수 완료' : (step === 5 ? '접수 완료' : '다음');
 
-    if (step === 4) {
+    if (step === 2) {
+      document.getElementById('branch2').value = formData.branch || '';
+      document.getElementById('senderName2').value = formData.senderName || '';
+      document.getElementById('senderPhone2').value = formData.senderPhone || '';
+      document.getElementById('senderAddress2').value = formData.senderAddress || '';
+      document.getElementById('senderAddressDetail2').value = formData.senderAddressDetail || '';
+      document.getElementById('receiverName2').value = formData.receiverName || '';
+      document.getElementById('receiverPhone2').value = formData.receiverPhone || '';
+      document.getElementById('receiverAddress2').value = formData.receiverAddress || '';
+      document.getElementById('receiverAddressDetail2').value = formData.receiverAddressDetail || '';
+      document.getElementById('receiverArea2').value = formData.receiverArea || '';
+      document.getElementById('specialRequest2').value = formData.specialRequest || '';
+    } else if (step === 3) {
+      document.getElementById('itemCategory3').value = formData.itemCategory || '';
+      document.getElementById('itemName3').value = formData.itemName || '';
+      document.getElementById('weightKg3').value = formData.weightKg || '';
+      document.getElementById('widthCm3').value = formData.widthCm || '';
+      document.getElementById('heightCm3').value = formData.heightCm || '';
+      document.getElementById('depthCm3').value = formData.depthCm || '';
+    } else if (step === 4) {
       updateSummary();
     }
     window.scrollTo(0, 0);
   }
 
   function updateSummary() {
-    document.getElementById('summary-sender').textContent = formData.senderName || '-';
-    document.getElementById('summary-sender-phone').textContent = formData.senderPhone || '-';
-    document.getElementById('summary-sender-address').textContent =
-      (formData.senderAddress || '-') + (formData.senderAddressDetail ? `, ${formData.senderAddressDetail}` : '');
-
-    document.getElementById('summary-receiver').textContent = formData.receiverName || '-';
-    document.getElementById('summary-receiver-phone').textContent = formData.receiverPhone || '-';
-    document.getElementById('summary-receiver-address').textContent =
-      (formData.receiverAddress || '-') + (formData.receiverAddressDetail ? `, ${formData.receiverAddressDetail}` : '');
-
-    document.getElementById('summary-item').textContent = formData.itemName || '-';
-    const weightSize = (formData.billedWeightKg ? formData.billedWeightKg.toFixed(2) : formData.weightKg || '-') +
-      (formData.weightKg ? 'kg' : '');
-    const sizeStr = (formData.widthCm && formData.heightCm && formData.depthCm)
-      ? `${formData.widthCm}×${formData.heightCm}×${formData.depthCm}cm` : '-';
-    document.getElementById('summary-weight-size').textContent = weightSize + ' / ' + sizeStr;
-
-    document.getElementById('summary-price').textContent = formData.price ? formData.price.toLocaleString('ko-KR') + '원' : '-';
-    const etaRegion = (formData.etaDate || '-') + ' / ' + (formData.regionType || '-');
-    document.getElementById('summary-eta-region').textContent = etaRegion;
+    const set = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    };
+    set('summary-sender', formData.senderName || '-');
+    set('summary-sender-phone', formData.senderPhone || '-');
+    set('summary-sender-address', (formData.senderAddress || '-') + (formData.senderAddressDetail ? `, ${formData.senderAddressDetail}` : ''));
+    set('summary-receiver', formData.receiverName || '-');
+    set('summary-receiver-phone', formData.receiverPhone || '-');
+    set('summary-receiver-address', (formData.receiverAddress || '-') + (formData.receiverAddressDetail ? `, ${formData.receiverAddressDetail}` : ''));
+    set('summary-item', formData.itemName || '-');
+    const weightSize = (formData.billedWeightKg ? formData.billedWeightKg.toFixed(2) : formData.weightKg || '-') + (formData.weightKg ? 'kg' : '');
+    const sizeStr = (formData.widthCm && formData.heightCm && formData.depthCm) ? `${formData.widthCm}×${formData.heightCm}×${formData.depthCm}cm` : '-';
+    set('summary-weight-size', weightSize + ' / ' + sizeStr);
+    set('summary-price', formData.price ? formData.price.toLocaleString('ko-KR') + '원' : '-');
+    set('summary-eta-region', (formData.etaDate || '-') + ' / ' + (formData.regionType || '-'));
   }
 
   function checkAgreement() {
@@ -819,11 +833,15 @@
     if (currentStep === 2) {
       if (!document.getElementById('branch2').value) errors.push('접수 지점을 선택하세요.');
       if (!document.getElementById('senderName2').value) errors.push('보내는 분 이름을 입력하세요.');
-      if (!document.getElementById('senderPhone2').value) errors.push('보내는 분 전화번호를 입력하세요.');
+      const senderPhone = document.getElementById('senderPhone2').value;
+      if (!senderPhone) errors.push('보내는 분 전화번호를 입력하세요.');
+      else if (!/^010-\d{4}-\d{4}$/.test(senderPhone)) errors.push('보내는 분 전화번호는 010-XXXX-XXXX 형식이어야 합니다.');
       if (!document.getElementById('senderAddress2').value) errors.push('보내는 분 주소를 입력하세요.');
       if (!document.getElementById('senderAddressDetail2').value) errors.push('보내는 분 상세주소를 입력하세요.');
       if (!document.getElementById('receiverName2').value) errors.push('받는 분 이름을 입력하세요.');
-      if (!document.getElementById('receiverPhone2').value) errors.push('받는 분 전화번호를 입력하세요.');
+      const receiverPhone = document.getElementById('receiverPhone2').value;
+      if (!receiverPhone) errors.push('받는 분 전화번호를 입력하세요.');
+      else if (!/^010-\d{4}-\d{4}$/.test(receiverPhone)) errors.push('받는 분 전화번호는 010-XXXX-XXXX 형식이어야 합니다.');
       if (!document.getElementById('receiverAddress2').value) errors.push('받는 분 주소를 입력하세요.');
       if (!document.getElementById('receiverAddressDetail2').value) errors.push('받는 분 상세주소를 입력하세요.');
       if (!document.getElementById('receiverArea2').value) errors.push('도착 지역을 입력하세요.');
@@ -1054,16 +1072,33 @@
     }).join('');
   }
 
-  // 전화번호 자동 하이픈 추가 (010-1234-5678 형식)
+  // 전화번호 자동 하이픈 추가 (010-XXXX-XXXX 형식만)
   function autoFormatPhone(el) {
     let val = el.value.replace(/\D/g, '');
-    if (val.length > 11) val = val.slice(0, 11);
-    if (val.length >= 10) {
+    if (!val.startsWith('010')) val = '010' + val;
+    val = val.slice(0, 11);
+    if (val.length === 11) {
       val = val.slice(0, 3) + '-' + val.slice(3, 7) + '-' + val.slice(7);
     } else if (val.length >= 4) {
       val = val.slice(0, 3) + '-' + val.slice(3);
     }
     el.value = val;
+  }
+
+  // 무게 검증 (0.01kg ~ 100kg)
+  function validateWeight(el) {
+    let val = parseFloat(el.value);
+    if (isNaN(val)) return;
+    if (val < 0.01) el.value = '0.01';
+    if (val > 100) el.value = '100';
+  }
+
+  // 부피 검증 (1cm ~ 200cm)
+  function validateDim(el) {
+    let val = parseFloat(el.value);
+    if (isNaN(val)) return;
+    if (val < 1) el.value = '1';
+    if (val > 200) el.value = '200';
   }
 
   // 무게 입력 방식 전환 (수동 vs 자동 저울)
@@ -1091,7 +1126,7 @@
 
   // 도착 지역 입력 → 권역 자동 판정 (규정 §2)
   function updateRegion() {
-    const area = (document.getElementById('receiverArea3').value || '').trim();
+    const area = (document.getElementById('receiverArea2').value || '').trim();
     let region = '일반';
     if (area.includes('제주')) {
       region = '제주';
@@ -1100,7 +1135,6 @@
     }
     formData.regionType = region;
     document.getElementById('regionDisplay').textContent = region;
-    recalc();
   }
 
   function renderCalcPending(suffix = '') {
