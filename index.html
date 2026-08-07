@@ -169,6 +169,10 @@
   .modal-step-3 .calc-part { padding: 16px 0; background: transparent; margin-top: 16px; border-top: 1px solid var(--border); }
   .modal-step-3 .calc-part h2 { font-size: 16px; margin: 0 0 12px; }
 
+  #calcSteps3 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .calc-step { grid-column: span 1; }
+  @media (max-width: 700px) { #calcSteps3 { grid-template-columns: 1fr; } }
+
   @media (max-width: 1000px) {
     .modal-step { padding: 22px 20px; }
     .step-title { font-size: 16px; margin-bottom: 16px; }
@@ -317,6 +321,11 @@
             <label for="receiverAddressDetail2">상세주소 <span class="req">필수</span></label>
             <input type="text" id="receiverAddressDetail2" placeholder="예: 456호" onchange="formData.receiverAddressDetail = this.value">
           </div>
+
+          <div class="step-field" style="margin-top: 10px;">
+            <label for="receiverArea2">도착 지역 <span class="req">필수</span></label>
+            <input type="text" id="receiverArea2" placeholder="예: 서울, 제주, 울산" oninput="updateRegion()" onchange="formData.receiverArea = this.value" autocomplete="off">
+          </div>
         </div>
 
         <div class="step-field">
@@ -381,14 +390,9 @@
           </div>
 
           <div class="field wide">
-            <label for="receiverArea3">도착 지역 <span class="req">필수</span></label>
-            <input type="text" id="receiverArea3" oninput="recalc();updateRegion()" onchange="formData.receiverArea = this.value" placeholder="예: 서울, 제주, 울릉도" autocomplete="off">
-          </div>
-
-          <div class="field wide">
             <div class="info-box">
               <span class="info-label">배송 권역 (자동 판정)</span>
-              <span id="regionDisplay" style="font-weight:600;color:var(--brand)">입력 후 표시됩니다</span>
+              <span id="regionDisplay" style="font-weight:600;color:var(--brand)">기본정보에서 입력한 주소로 판정됩니다</span>
             </div>
           </div>
         </div>
@@ -419,40 +423,43 @@
     <div class="modal-step" data-step="4">
       <div class="step-title">최종 확인</div>
 
-      <div class="step-grid" style="grid-template-columns: 1fr">
-        <!-- 접수 정보 -->
-        <div class="summary-section" style="background:#f5f8fc;padding:16px;border-radius:10px;position:relative">
+      <div class="step-grid" style="grid-template-columns: 1fr 1fr; gap: 12px;">
+        <!-- 보내는분 정보 -->
+        <div class="summary-section" style="background:#f5f8fc;padding:14px;border-radius:8px;position:relative">
           <button class="summary-edit-btn" onclick="navigateToStep(2)">[수정]</button>
-          <p style="margin:0 0 8px;color:var(--muted);font-size:12px;font-weight:600">접수 정보</p>
-          <p style="margin:0;font-size:13px"><span style="color:var(--muted)">구분:</span> <span id="summary-type">-</span></p>
-          <p style="margin:4px 0 0;font-size:13px"><span style="color:var(--muted)">지점:</span> <span id="summary-branch">-</span></p>
-          <p style="margin:4px 0 0;font-size:13px"><span style="color:var(--muted)">보내는분:</span> <span id="summary-sender">-</span></p>
+          <p style="margin:0 0 6px;color:var(--muted);font-size:11px;font-weight:600">📤 보내는분</p>
+          <p style="margin:0;font-size:12px"><span id="summary-sender">-</span></p>
+          <p style="margin:3px 0 0;font-size:12px;color:var(--muted)" id="summary-sender-phone">-</p>
+          <p style="margin:6px 0 0;font-size:11px;color:var(--muted)">주소</p>
+          <p style="margin:2px 0 0;font-size:11px" id="summary-sender-address">-</p>
         </div>
 
-        <!-- 배송지 정보 -->
-        <div class="summary-section" style="background:#f5f8fc;padding:16px;border-radius:10px;position:relative">
+        <!-- 받는분 정보 -->
+        <div class="summary-section" style="background:#f0f7f4;padding:14px;border-radius:8px;position:relative">
           <button class="summary-edit-btn" onclick="navigateToStep(2)">[수정]</button>
-          <p style="margin:0 0 8px;color:var(--muted);font-size:12px;font-weight:600">배송지 정보</p>
-          <p style="margin:0;font-size:13px"><span style="color:var(--muted)">받는분:</span> <span id="summary-receiver">-</span></p>
-          <p style="margin:4px 0 0;font-size:13px"><span style="color:var(--muted)">전화:</span> <span id="summary-phone">-</span></p>
-          <p style="margin:4px 0 0;font-size:13px"><span style="color:var(--muted)">주소:</span> <span id="summary-address">-</span></p>
+          <p style="margin:0 0 6px;color:#27a745;font-size:11px;font-weight:600">📥 받는분</p>
+          <p style="margin:0;font-size:12px"><span id="summary-receiver">-</span></p>
+          <p style="margin:3px 0 0;font-size:12px;color:var(--muted)" id="summary-receiver-phone">-</p>
+          <p style="margin:6px 0 0;font-size:11px;color:var(--muted)">주소</p>
+          <p style="margin:2px 0 0;font-size:11px" id="summary-receiver-address">-</p>
         </div>
 
         <!-- 물품 정보 -->
-        <div class="summary-section" style="background:#f5f8fc;padding:16px;border-radius:10px;position:relative">
+        <div class="summary-section" style="background:#f5f8fc;padding:14px;border-radius:8px;position:relative">
           <button class="summary-edit-btn" onclick="navigateToStep(3)">[수정]</button>
-          <p style="margin:0 0 8px;color:var(--muted);font-size:12px;font-weight:600">물품 정보</p>
-          <p style="margin:0;font-size:13px"><span style="color:var(--muted)">물품:</span> <span id="summary-item">-</span></p>
-          <p style="margin:4px 0 0;font-size:13px"><span style="color:var(--muted)">무게:</span> <span id="summary-weight">-</span></p>
-          <p style="margin:4px 0 0;font-size:13px"><span style="color:var(--muted)">크기:</span> <span id="summary-size">-</span></p>
+          <p style="margin:0 0 6px;color:var(--muted);font-size:11px;font-weight:600">📦 물품 정보</p>
+          <p style="margin:0;font-size:12px"><span id="summary-item">-</span></p>
+          <p style="margin:3px 0 0;font-size:12px;color:var(--muted)">무게 / 크기</p>
+          <p style="margin:2px 0 0;font-size:11px" id="summary-weight-size">-</p>
         </div>
 
-        <!-- 배송료 -->
-        <div class="summary-section" style="background:var(--ok-bg);padding:16px;border-radius:10px;border:1px solid var(--ok-border);position:relative">
+        <!-- 배송료 & 도착예정 -->
+        <div class="summary-section" style="background:var(--ok-bg);padding:14px;border-radius:8px;border:1px solid var(--ok-border);position:relative">
           <button class="summary-edit-btn" onclick="navigateToStep(3)">[수정]</button>
-          <p style="margin:0 0 8px;color:var(--muted);font-size:12px;font-weight:600">배송료 / 도착예정</p>
-          <p style="margin:0;font-size:20px;font-weight:800;color:var(--brand-dark)" id="summary-price">-</p>
-          <p style="margin:8px 0 0;font-size:13px;color:var(--brand-dark)" id="summary-eta">-</p>
+          <p style="margin:0 0 6px;color:var(--muted);font-size:11px;font-weight:600">💰 배송료 & 도착예정</p>
+          <p style="margin:0;font-size:16px;font-weight:800;color:var(--brand-dark)" id="summary-price">-</p>
+          <p style="margin:4px 0 0;font-size:11px;color:var(--muted)">도착예정 / 권역</p>
+          <p style="margin:2px 0 0;font-size:11px" id="summary-eta-region">-</p>
         </div>
       </div>
 
@@ -661,10 +668,12 @@
         formData.senderName = document.getElementById('senderName2').value;
         formData.senderPhone = document.getElementById('senderPhone2').value;
         formData.senderAddress = document.getElementById('senderAddress2').value;
+        formData.senderAddressDetail = document.getElementById('senderAddressDetail2').value;
         formData.receiverName = document.getElementById('receiverName2').value;
         formData.receiverPhone = document.getElementById('receiverPhone2').value;
         formData.receiverAddress = document.getElementById('receiverAddress2').value;
         formData.receiverAddressDetail = document.getElementById('receiverAddressDetail2').value;
+        formData.receiverArea = document.getElementById('receiverArea2').value;
         formData.specialRequest = document.getElementById('specialRequest2').value;
       } else if (currentStep === 3) {
         formData.itemName = document.getElementById('itemName3').value;
@@ -672,7 +681,7 @@
         formData.widthCm = parseFloat(document.getElementById('widthCm3').value) || null;
         formData.heightCm = parseFloat(document.getElementById('heightCm3').value) || null;
         formData.depthCm = parseFloat(document.getElementById('depthCm3').value) || null;
-        formData.receiverArea = document.getElementById('receiverArea3').value;
+        formData.receiverArea = document.getElementById('receiverArea2').value;
         formData.staffConfirm = document.getElementById('staffConfirm3').checked;
       } else if (currentStep === 4) {
         submitShipment();
@@ -713,20 +722,26 @@
   }
 
   function updateSummary() {
-    const typeNames = { 'nonmember': '비회원 접수', 'member': '회원 접수', 'store': '점포 접수' };
-    document.getElementById('summary-type').textContent = typeNames[formData.receptionType] || '-';
-    document.getElementById('summary-branch').textContent = formData.branch || '-';
-    document.getElementById('summary-sender').textContent = (formData.senderName ? `${formData.senderName} (${formData.senderPhone})` : '-');
+    document.getElementById('summary-sender').textContent = formData.senderName || '-';
+    document.getElementById('summary-sender-phone').textContent = formData.senderPhone || '-';
+    document.getElementById('summary-sender-address').textContent =
+      (formData.senderAddress || '-') + (formData.senderAddressDetail ? `, ${formData.senderAddressDetail}` : '');
+
     document.getElementById('summary-receiver').textContent = formData.receiverName || '-';
-    document.getElementById('summary-phone').textContent = formData.receiverPhone || '-';
-    document.getElementById('summary-address').textContent = (formData.receiverAddress || '-') +
-      (formData.receiverAddressDetail ? `, ${formData.receiverAddressDetail}` : '');
+    document.getElementById('summary-receiver-phone').textContent = formData.receiverPhone || '-';
+    document.getElementById('summary-receiver-address').textContent =
+      (formData.receiverAddress || '-') + (formData.receiverAddressDetail ? `, ${formData.receiverAddressDetail}` : '');
+
     document.getElementById('summary-item').textContent = formData.itemName || '-';
-    document.getElementById('summary-weight').textContent = (formData.billedWeightKg ? formData.billedWeightKg.toFixed(2) : formData.weightKg || '-') + (formData.weightKg ? 'kg' : '');
-    document.getElementById('summary-size').textContent = (formData.widthCm && formData.heightCm && formData.depthCm)
+    const weightSize = (formData.billedWeightKg ? formData.billedWeightKg.toFixed(2) : formData.weightKg || '-') +
+      (formData.weightKg ? 'kg' : '');
+    const sizeStr = (formData.widthCm && formData.heightCm && formData.depthCm)
       ? `${formData.widthCm}×${formData.heightCm}×${formData.depthCm}cm` : '-';
+    document.getElementById('summary-weight-size').textContent = weightSize + ' / ' + sizeStr;
+
     document.getElementById('summary-price').textContent = formData.price ? formData.price.toLocaleString('ko-KR') + '원' : '-';
-    document.getElementById('summary-eta').textContent = formData.etaDate || '-';
+    const etaRegion = (formData.etaDate || '-') + ' / ' + (formData.regionType || '-');
+    document.getElementById('summary-eta-region').textContent = etaRegion;
   }
 
   function checkAgreement() {
@@ -811,13 +826,13 @@
       if (!document.getElementById('receiverPhone2').value) errors.push('받는 분 전화번호를 입력하세요.');
       if (!document.getElementById('receiverAddress2').value) errors.push('받는 분 주소를 입력하세요.');
       if (!document.getElementById('receiverAddressDetail2').value) errors.push('받는 분 상세주소를 입력하세요.');
+      if (!document.getElementById('receiverArea2').value) errors.push('도착 지역을 입력하세요.');
     }
     if (currentStep === 3) {
       if (!document.getElementById('itemName3').value) errors.push('물품명을 입력하세요.');
       if (!document.getElementById('weightKg3').value) errors.push('실제 무게를 입력하세요.');
       if (!document.getElementById('widthCm3').value || !document.getElementById('heightCm3').value || !document.getElementById('depthCm3').value)
         errors.push('가로, 세로, 높이를 모두 입력하세요.');
-      if (!document.getElementById('receiverArea3').value) errors.push('도착 지역을 입력하세요.');
     }
     if (currentStep === 4) {
       if (!document.getElementById('agree-privacy').checked) {
@@ -1235,7 +1250,7 @@
     const width = getNumeric('widthCm' + suffix);
     const height = getNumeric('heightCm' + suffix);
     const depth = getNumeric('depthCm' + suffix);
-    const area = document.getElementById('receiverArea' + suffix).value;
+    const area = document.getElementById('receiverArea2').value;
 
     if (ban.hardHits.length > 0) {
       renderCalcBannedStop(itemName, ban.hardHits[0], suffix);
@@ -1256,7 +1271,6 @@
     const width = getNumeric('widthCm' + suffix);
     const height = getNumeric('heightCm' + suffix);
     const depth = getNumeric('depthCm' + suffix);
-    const area = document.getElementById('receiverArea' + suffix).value;
 
     if (!itemName) errors.push('물품명을 입력하세요.');
     if (weight === null) errors.push('실제 무게를 0보다 큰 숫자로 입력하세요.');
