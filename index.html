@@ -44,9 +44,12 @@
     padding: 20px 16px 60px;
   }
   .page { max-width: 600px; margin: 0 auto; }
-  .topbar { background: var(--brand); color: #fff; padding: 16px 22px; border-radius: 14px 14px 0 0; }
+  .topbar { background: var(--brand); color: #fff; padding: 16px 22px; border-radius: 14px 14px 0 0; display: flex; justify-content: space-between; align-items: center; }
+  .topbar-left { flex: 1; }
   .topbar .brand { font-size: 22px; font-weight: 800; letter-spacing: 1px; }
   .topbar .sub { font-size: 12px; opacity: .85; margin-top: 4px; }
+  .topbar-home-btn { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; }
+  .topbar-home-btn:hover { background: rgba(255,255,255,0.3); }
 
   .layout {
     display: grid; grid-template-columns: 1.15fr 1fr; gap: 0;
@@ -136,8 +139,8 @@
   .progress-step.active { background: var(--brand); color: #fff; }
   .progress-step.done { color: var(--brand-dark); }
 
-  .modal-container { background: var(--card); border: 1px solid var(--border); border-radius: 0 0 12px 12px; overflow: hidden; min-height: 450px; display: flex; flex-direction: column; }
-  .modal-step { display: none !important; padding: 24px 20px; flex: 1; overflow-y: auto; }
+  .modal-container { background: var(--card); border: 1px solid var(--border); border-radius: 0 0 12px 12px; overflow: hidden; height: 500px; display: flex; flex-direction: column; }
+  .modal-step { display: none !important; padding: 24px 20px; height: 500px; overflow-y: auto; }
   .modal-step.active { display: block !important; animation: fadeIn 0.2s; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
@@ -209,8 +212,11 @@
 <body>
 <div class="page">
   <div class="topbar">
-    <div class="brand">두두택배 접수</div>
-    <div class="sub">다단계 접수 - 규정 전 조항 반영 / 단계별 진행</div>
+    <div class="topbar-left">
+      <div class="brand">두두택배 접수</div>
+      <div class="sub">다단계 접수 - 규정 전 조항 반영 / 단계별 진행</div>
+    </div>
+    <button class="topbar-home-btn" onclick="navigateToStep(1)">🏠 처음으로</button>
   </div>
 
   <div class="progress-bar">
