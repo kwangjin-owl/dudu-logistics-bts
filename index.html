@@ -260,7 +260,7 @@
         <!-- 접수 지점 -->
         <div class="step-field">
           <label for="branch2">접수 지점 <span class="req">필수</span></label>
-          <select id="branch2" onchange="formData.branch = this.value; updateNextButtonState()">
+          <select id="branch2" oninput="formData.branch = this.value; updateNextButtonState()">
             <option value="">선택하세요</option>
             <option value="서울지점">서울지점</option>
             <option value="용산지점">용산지점</option>
@@ -277,22 +277,22 @@
 
           <div class="step-field" style="margin-bottom: 8px;">
             <label for="senderName2">이름 <span class="req">필수</span></label>
-            <input type="text" id="senderName2" placeholder="예: 김민준" onchange="formData.senderName = this.value; updateNextButtonState()" oninput="updateNextButtonState()">
+            <input type="text" id="senderName2" placeholder="예: 김민준" oninput="formData.senderName = this.value; updateNextButtonState()">
           </div>
 
           <div class="step-field" style="margin-bottom: 8px;">
             <label for="senderPhone2">전화번호 <span class="req">필수</span></label>
-            <input type="text" id="senderPhone2" placeholder="예: 010-1234-5678" oninput="autoFormatPhone(this)" onchange="formData.senderPhone = this.value; updateNextButtonState()">
+            <input type="text" id="senderPhone2" placeholder="예: 010-1234-5678" oninput="autoFormatPhone(this); formData.senderPhone = this.value; updateNextButtonState()">
           </div>
 
           <div class="step-field" style="margin-bottom: 8px;">
             <label for="senderAddress2">주소 <span class="req">필수</span></label>
-            <input type="text" id="senderAddress2" placeholder="예: 서울시 강남구 테헤란로 123" onchange="formData.senderAddress = this.value; updateNextButtonState()">
+            <input type="text" id="senderAddress2" placeholder="예: 서울시 강남구 테헤란로 123" oninput="formData.senderAddress = this.value; updateNextButtonState()">
           </div>
 
           <div class="step-field">
             <label for="senderAddressDetail2">상세주소 <span class="req">필수</span></label>
-            <input type="text" id="senderAddressDetail2" placeholder="예: 456호" onchange="formData.senderAddressDetail = this.value; updateNextButtonState()">
+            <input type="text" id="senderAddressDetail2" placeholder="예: 456호" oninput="formData.senderAddressDetail = this.value; updateNextButtonState()">
           </div>
         </div>
 
@@ -302,33 +302,33 @@
 
           <div class="step-field" style="margin-bottom: 8px;">
             <label for="receiverName2">이름 <span class="req">필수</span></label>
-            <input type="text" id="receiverName2" placeholder="예: 이서연" onchange="formData.receiverName = this.value; updateNextButtonState()">
+            <input type="text" id="receiverName2" placeholder="예: 이서연" oninput="formData.receiverName = this.value; updateNextButtonState()">
           </div>
 
           <div class="step-field" style="margin-bottom: 8px;">
             <label for="receiverPhone2">전화번호 <span class="req">필수</span></label>
-            <input type="text" id="receiverPhone2" placeholder="예: 010-1234-5678" oninput="autoFormatPhone(this)" onchange="formData.receiverPhone = this.value; updateNextButtonState()">
+            <input type="text" id="receiverPhone2" placeholder="예: 010-1234-5678" oninput="autoFormatPhone(this)" oninput="formData.receiverPhone = this.value; updateNextButtonState()">
           </div>
 
           <div class="step-field" style="margin-bottom: 8px;">
             <label for="receiverAddress2">주소 <span class="req">필수</span></label>
-            <input type="text" id="receiverAddress2" placeholder="예: 서울시 강남구 테헤란로 123" onchange="formData.receiverAddress = this.value; updateNextButtonState()">
+            <input type="text" id="receiverAddress2" placeholder="예: 서울시 강남구 테헤란로 123" oninput="formData.receiverAddress = this.value; updateNextButtonState()">
           </div>
 
           <div class="step-field">
             <label for="receiverAddressDetail2">상세주소 <span class="req">필수</span></label>
-            <input type="text" id="receiverAddressDetail2" placeholder="예: 456호" onchange="formData.receiverAddressDetail = this.value; updateNextButtonState()">
+            <input type="text" id="receiverAddressDetail2" placeholder="예: 456호" oninput="formData.receiverAddressDetail = this.value; updateNextButtonState()">
           </div>
 
           <div class="step-field" style="margin-top: 10px;">
             <label for="receiverArea2">도착 지역 <span class="req">필수</span></label>
-            <input type="text" id="receiverArea2" placeholder="예: 서울, 제주, 울산" oninput="updateRegion()" onchange="formData.receiverArea = this.value; updateNextButtonState()" autocomplete="off">
+            <input type="text" id="receiverArea2" placeholder="예: 서울, 제주, 울산" oninput="updateRegion()" oninput="formData.receiverArea = this.value; updateNextButtonState()" autocomplete="off">
           </div>
         </div>
 
         <div class="step-field">
           <label for="specialRequest2">배송 요청사항 <span style="color:var(--muted);font-size:11px;font-weight:400">(선택)</span></label>
-          <textarea id="specialRequest2" placeholder="예: 부재중 시 현관에 놔두세요" onchange="formData.specialRequest = this.value" style="min-height: 60px;"></textarea>
+          <textarea id="specialRequest2" placeholder="예: 부재중 시 현관에 놔두세요" oninput="formData.specialRequest = this.value" style="min-height: 60px;"></textarea>
           <div style="font-size:11px;color:var(--muted);margin-top:4px" id="charCount2">0/200</div>
         </div>
       </div>
@@ -367,7 +367,7 @@
               <button class="tab-btn" onclick="switchWeightMode('scale')" id="tab-scale">🔴 자동 저울</button>
             </div>
             <div id="manualWeightInput" style="display:block">
-              <input type="number" id="weightKg3" placeholder="예: 3.0" step="0.01" min="0.01" max="100" oninput="validateWeight(this); recalc()" onchange="formData.weight = this.value; updateNextButtonState()">
+              <input type="number" id="weightKg3" placeholder="예: 3.0" step="0.01" min="0.01" max="100" oninput="validateWeight(this); recalc()" oninput="formData.weight = this.value; updateNextButtonState()">
             </div>
             <div id="scaleWeightInput" style="display:none">
               <div style="text-align:center;padding:20px;color:var(--muted)">
@@ -745,26 +745,24 @@
   }
 
   function updateSummary() {
-    const set = (id, val) => {
-      try {
-        const el = document.getElementById(id);
-        if (el) el.textContent = val || '-';
-      } catch (e) {
-        console.warn(`요소 ${id} 설정 오류:`, e);
+    const setText = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.textContent = (val === null || val === undefined || val === '') ? '-' : val;
       }
     };
-    set('summary-sender', formData.senderName);
-    set('summary-sender-phone', formData.senderPhone);
-    set('summary-sender-address', (formData.senderAddress || '') + (formData.senderAddressDetail ? ` ${formData.senderAddressDetail}` : ''));
-    set('summary-receiver', formData.receiverName);
-    set('summary-receiver-phone', formData.receiverPhone);
-    set('summary-receiver-address', (formData.receiverAddress || '') + (formData.receiverAddressDetail ? ` ${formData.receiverAddressDetail}` : ''));
-    set('summary-item', formData.itemName);
+    setText('summary-sender', formData.senderName || '-');
+    setText('summary-sender-phone', formData.senderPhone || '-');
+    setText('summary-sender-address', (formData.senderAddress || '-') + (formData.senderAddressDetail ? ` ${formData.senderAddressDetail}` : ''));
+    setText('summary-receiver', formData.receiverName || '-');
+    setText('summary-receiver-phone', formData.receiverPhone || '-');
+    setText('summary-receiver-address', (formData.receiverAddress || '-') + (formData.receiverAddressDetail ? ` ${formData.receiverAddressDetail}` : ''));
+    setText('summary-item', formData.itemName || '-');
     const weightSize = (formData.billedWeightKg ? formData.billedWeightKg.toFixed(2) : formData.weightKg || '-') + (formData.weightKg ? 'kg' : '');
     const sizeStr = (formData.widthCm && formData.heightCm && formData.depthCm) ? `${formData.widthCm}×${formData.heightCm}×${formData.depthCm}cm` : '-';
-    set('summary-weight-size', weightSize + ' / ' + sizeStr);
-    set('summary-price', formData.price ? formData.price.toLocaleString('ko-KR') + '원' : '-');
-    set('summary-eta-region', (formData.etaDate || '-') + ' / ' + (formData.regionType || '-'));
+    setText('summary-weight-size', weightSize + ' / ' + sizeStr);
+    setText('summary-price', formData.price ? formData.price.toLocaleString('ko-KR') + '원' : '-');
+    setText('summary-eta-region', (formData.etaDate || '-') + ' / ' + (formData.regionType || '-'));
   }
 
   function updateNextButtonState() {
