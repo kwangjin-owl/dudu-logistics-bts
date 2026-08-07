@@ -43,7 +43,7 @@
     color: var(--text);
     padding: 20px 16px 60px;
   }
-  .page { max-width: 1120px; margin: 0 auto; }
+  .page { max-width: 500px; margin: 0 auto; }
   .topbar { background: var(--brand); color: #fff; padding: 16px 22px; border-radius: 14px 14px 0 0; }
   .topbar .brand { font-size: 22px; font-weight: 800; letter-spacing: 1px; }
   .topbar .sub { font-size: 12px; opacity: .85; margin-top: 4px; }
@@ -135,8 +135,8 @@
   .progress-step.active { background: var(--brand); color: #fff; }
   .progress-step.done { color: var(--brand-dark); }
 
-  .modal-container { background: var(--card); border: 1px solid var(--border); border-radius: 0 0 12px 12px; overflow: hidden; min-height: auto; display: flex; flex-direction: column; }
-  .modal-step { display: none !important; padding: 28px 28px; flex: 1; overflow-y: auto; }
+  .modal-container { background: var(--card); border: 1px solid var(--border); border-radius: 0 0 12px 12px; overflow: hidden; min-height: 450px; display: flex; flex-direction: column; }
+  .modal-step { display: none !important; padding: 24px 20px; flex: 1; overflow-y: auto; }
   .modal-step.active { display: block !important; animation: fadeIn 0.2s; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
@@ -242,7 +242,9 @@
     <!-- 2단계: 기본정보 -->
     <div class="modal-step" data-step="2">
       <div class="step-title">기본 정보를 입력하세요</div>
-      <div class="step-grid">
+
+      <div class="step-grid" style="grid-template-columns: 1fr">
+        <!-- 접수 지점 -->
         <div class="step-field">
           <label for="branch2">접수 지점 <span class="req">필수</span></label>
           <select id="branch2" onchange="formData.branch = this.value">
@@ -256,34 +258,55 @@
           </select>
         </div>
 
-        <div class="step-field">
-          <label for="senderName2">보내는 분 이름 <span class="req">필수</span></label>
-          <input type="text" id="senderName2" placeholder="예: 김민준" onchange="formData.senderName = this.value">
+        <!-- 보내는분 정보 섹션 -->
+        <div style="background: #f5f8fc; border-radius: 8px; padding: 12px; margin-top: 12px; border-left: 3px solid var(--brand);">
+          <div style="font-size: 12px; font-weight: 700; color: var(--brand); margin-bottom: 10px;">📤 보내는 분 정보</div>
+
+          <div class="step-field" style="margin-bottom: 8px;">
+            <label for="senderName2">이름 <span class="req">필수</span></label>
+            <input type="text" id="senderName2" placeholder="예: 김민준" onchange="formData.senderName = this.value">
+          </div>
+
+          <div class="step-field" style="margin-bottom: 8px;">
+            <label for="senderPhone2">전화번호 <span class="req">필수</span></label>
+            <input type="tel" id="senderPhone2" placeholder="예: 010-1234-5678" onchange="formData.senderPhone = this.value; autoFormatPhone(this)">
+          </div>
+
+          <div class="step-field">
+            <label for="senderAddress2">주소 <span class="req">필수</span></label>
+            <input type="text" id="senderAddress2" placeholder="예: 서울시 강남구 테헤란로 123" onchange="formData.senderAddress = this.value">
+          </div>
         </div>
 
-        <div class="step-field">
-          <label for="receiverName2">받는 분 이름 <span class="req">필수</span></label>
-          <input type="text" id="receiverName2" placeholder="예: 이서연" onchange="formData.receiverName = this.value">
+        <!-- 받는분 정보 섹션 -->
+        <div style="background: #f0f7f4; border-radius: 8px; padding: 12px; margin-top: 12px; border-left: 3px solid #27a745;">
+          <div style="font-size: 12px; font-weight: 700; color: #27a745; margin-bottom: 10px;">📥 받는 분 정보</div>
+
+          <div class="step-field" style="margin-bottom: 8px;">
+            <label for="receiverName2">이름 <span class="req">필수</span></label>
+            <input type="text" id="receiverName2" placeholder="예: 이서연" onchange="formData.receiverName = this.value">
+          </div>
+
+          <div class="step-field" style="margin-bottom: 8px;">
+            <label for="receiverPhone2">전화번호 <span class="req">필수</span></label>
+            <input type="tel" id="receiverPhone2" placeholder="예: 010-1234-5678" onchange="formData.receiverPhone = this.value; autoFormatPhone(this)">
+          </div>
+
+          <div class="step-field">
+            <label for="receiverAddress2">주소 <span class="req">필수</span></label>
+            <input type="text" id="receiverAddress2" placeholder="예: 서울시 강남구 테헤란로 123" onchange="formData.receiverAddress = this.value">
+          </div>
         </div>
 
-        <div class="step-field">
-          <label for="receiverPhone2">받는 분 전화번호 <span class="req">필수</span></label>
-          <input type="tel" id="receiverPhone2" placeholder="예: 010-1234-5678" onchange="formData.receiverPhone = this.value; autoFormatPhone(this)">
-        </div>
-
-        <div class="step-field">
-          <label for="receiverAddress2">받는 분 주소 <span class="req">필수</span></label>
-          <input type="text" id="receiverAddress2" placeholder="예: 서울시 강남구 테헤란로 123" onchange="formData.receiverAddress = this.value">
-        </div>
-
-        <div class="step-field">
+        <!-- 상세주소 & 요청사항 -->
+        <div class="step-field" style="margin-top: 10px;">
           <label for="receiverAddressDetail2">상세주소 <span class="req">필수</span></label>
           <input type="text" id="receiverAddressDetail2" placeholder="예: 456호" onchange="formData.receiverAddressDetail = this.value">
         </div>
 
-        <div class="step-field wide">
+        <div class="step-field">
           <label for="specialRequest2">배송 요청사항 <span style="color:var(--muted);font-size:11px;font-weight:400">(선택)</span></label>
-          <textarea id="specialRequest2" placeholder="예: 부재중 시 현관에 놔두세요" onchange="formData.specialRequest = this.value"></textarea>
+          <textarea id="specialRequest2" placeholder="예: 부재중 시 현관에 놔두세요" onchange="formData.specialRequest = this.value" style="min-height: 60px;"></textarea>
           <div style="font-size:11px;color:var(--muted);margin-top:4px" id="charCount2">0/200</div>
         </div>
       </div>
@@ -294,6 +317,21 @@
       <div class="form-part">
         <h2 style="margin-top:0">물품 정보</h2>
         <div class="field-grid">
+          <div class="field wide">
+            <label for="itemCategory3">물품 카테고리 <span class="req">필수</span></label>
+            <select id="itemCategory3" onchange="recalc()">
+              <option value="">선택하세요</option>
+              <option value="의류">의류</option>
+              <option value="신발">신발</option>
+              <option value="잡화">잡화</option>
+              <option value="식품">식품</option>
+              <option value="가전">가전</option>
+              <option value="전자기기">전자기기</option>
+              <option value="책">책</option>
+              <option value="기타">기타</option>
+            </select>
+          </div>
+
           <div class="field wide">
             <label for="itemName3">물품명 <span class="req">필수</span></label>
             <input type="text" id="itemName3" placeholder="예: 이불" oninput="recalc()">
@@ -411,7 +449,7 @@
         </div>
         <div class="agreement-item optional">
           <input type="checkbox" id="agree-marketing">
-          <label for="agree-marketing">마케팅 정보 수신에 동의합니다</label>
+          <label for="agree-marketing">마케팅 정보 수신에 동의합니다 <span style="color:var(--muted);font-size:11px;font-weight:400">(선택)</span></label>
         </div>
       </div>
 
@@ -573,8 +611,9 @@
   let currentStep = 1;
   const formData = {
     receptionType: null,
-    branch: '', senderName: '', receiverName: '', receiverPhone: '', receiverAddress: '', receiverAddressDetail: '', specialRequest: '',
-    itemName: '', weightKg: null, weight: null, weightMode: 'manual', widthCm: null, heightCm: null, depthCm: null,
+    branch: '', senderName: '', senderPhone: '', senderAddress: '',
+    receiverName: '', receiverPhone: '', receiverAddress: '', receiverAddressDetail: '', specialRequest: '',
+    itemName: '', itemCategory: '', weightKg: null, weight: null, weightMode: 'manual', widthCm: null, heightCm: null, depthCm: null,
     receiverArea: '', regionType: 'general', staffConfirm: false,
     billedWeightKg: null, sizeGrade: null, price: null, etaDate: null,
     trackingNo: null
@@ -603,6 +642,8 @@
       if (currentStep === 2) {
         formData.branch = document.getElementById('branch2').value;
         formData.senderName = document.getElementById('senderName2').value;
+        formData.senderPhone = document.getElementById('senderPhone2').value;
+        formData.senderAddress = document.getElementById('senderAddress2').value;
         formData.receiverName = document.getElementById('receiverName2').value;
         formData.receiverPhone = document.getElementById('receiverPhone2').value;
         formData.receiverAddress = document.getElementById('receiverAddress2').value;
@@ -658,7 +699,7 @@
     const typeNames = { 'nonmember': '비회원 접수', 'member': '회원 접수', 'store': '점포 접수' };
     document.getElementById('summary-type').textContent = typeNames[formData.receptionType] || '-';
     document.getElementById('summary-branch').textContent = formData.branch || '-';
-    document.getElementById('summary-sender').textContent = formData.senderName || '-';
+    document.getElementById('summary-sender').textContent = (formData.senderName ? `${formData.senderName} (${formData.senderPhone})` : '-');
     document.getElementById('summary-receiver').textContent = formData.receiverName || '-';
     document.getElementById('summary-phone').textContent = formData.receiverPhone || '-';
     document.getElementById('summary-address').textContent = (formData.receiverAddress || '-') +
@@ -703,12 +744,15 @@
     formData.receptionType = null;
     formData.branch = '';
     formData.senderName = '';
+    formData.senderPhone = '';
+    formData.senderAddress = '';
     formData.receiverName = '';
     formData.receiverPhone = '';
     formData.receiverAddress = '';
     formData.receiverAddressDetail = '';
     formData.specialRequest = '';
     formData.itemName = '';
+    formData.itemCategory = '';
     formData.weightKg = null;
     formData.weight = null;
     formData.weightMode = 'manual';
@@ -731,6 +775,8 @@
     if (currentStep === 2) {
       if (!document.getElementById('branch2').value) errors.push('접수 지점을 선택하세요.');
       if (!document.getElementById('senderName2').value) errors.push('보내는 분 이름을 입력하세요.');
+      if (!document.getElementById('senderPhone2').value) errors.push('보내는 분 전화번호를 입력하세요.');
+      if (!document.getElementById('senderAddress2').value) errors.push('보내는 분 주소를 입력하세요.');
       if (!document.getElementById('receiverName2').value) errors.push('받는 분 이름을 입력하세요.');
       if (!document.getElementById('receiverPhone2').value) errors.push('받는 분 전화번호를 입력하세요.');
       if (!document.getElementById('receiverAddress2').value) errors.push('받는 분 주소를 입력하세요.');
