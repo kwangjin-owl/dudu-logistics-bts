@@ -277,7 +277,7 @@
 
           <div class="step-field" style="margin-bottom: 8px;">
             <label for="senderName2">이름 <span class="req">필수</span></label>
-            <input type="text" id="senderName2" placeholder="예: 김민준" oninput="formData.senderName = this.value; updateNextButtonState()">
+            <input type="text" id="senderName2" placeholder="예: 김민준" oninput="formData.senderName = this.value; updateNextButtonState()" onchange="updateNextButtonState()">
           </div>
 
           <div class="step-field" style="margin-bottom: 8px;">
@@ -712,8 +712,8 @@
     });
 
     document.getElementById('prevBtn').disabled = step === 1;
-    updateNextButtonState();
     document.getElementById('nextBtn').textContent = step === 4 ? '접수 완료' : (step === 5 ? '접수 완료' : '다음');
+    updateNextButtonState();
 
     if (step === 2) {
       document.getElementById('branch2').value = formData.branch || '';
@@ -745,24 +745,30 @@
   }
 
   function updateSummary() {
-    const setText = (id, val) => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.textContent = (val === null || val === undefined || val === '') ? '-' : val;
-      }
+    const els = {
+      sender: document.getElementById('summary-sender'),
+      senderPhone: document.getElementById('summary-sender-phone'),
+      senderAddr: document.getElementById('summary-sender-address'),
+      receiver: document.getElementById('summary-receiver'),
+      receiverPhone: document.getElementById('summary-receiver-phone'),
+      receiverAddr: document.getElementById('summary-receiver-address'),
+      item: document.getElementById('summary-item'),
+      weightSize: document.getElementById('summary-weight-size'),
+      price: document.getElementById('summary-price'),
+      etaRegion: document.getElementById('summary-eta-region')
     };
-    setText('summary-sender', formData.senderName || '-');
-    setText('summary-sender-phone', formData.senderPhone || '-');
-    setText('summary-sender-address', (formData.senderAddress || '-') + (formData.senderAddressDetail ? ` ${formData.senderAddressDetail}` : ''));
-    setText('summary-receiver', formData.receiverName || '-');
-    setText('summary-receiver-phone', formData.receiverPhone || '-');
-    setText('summary-receiver-address', (formData.receiverAddress || '-') + (formData.receiverAddressDetail ? ` ${formData.receiverAddressDetail}` : ''));
-    setText('summary-item', formData.itemName || '-');
+    if (els.sender) els.sender.textContent = formData.senderName || '-';
+    if (els.senderPhone) els.senderPhone.textContent = formData.senderPhone || '-';
+    if (els.senderAddr) els.senderAddr.textContent = (formData.senderAddress || '-') + (formData.senderAddressDetail ? ` ${formData.senderAddressDetail}` : '');
+    if (els.receiver) els.receiver.textContent = formData.receiverName || '-';
+    if (els.receiverPhone) els.receiverPhone.textContent = formData.receiverPhone || '-';
+    if (els.receiverAddr) els.receiverAddr.textContent = (formData.receiverAddress || '-') + (formData.receiverAddressDetail ? ` ${formData.receiverAddressDetail}` : '');
+    if (els.item) els.item.textContent = formData.itemName || '-';
     const weightSize = (formData.billedWeightKg ? formData.billedWeightKg.toFixed(2) : formData.weightKg || '-') + (formData.weightKg ? 'kg' : '');
     const sizeStr = (formData.widthCm && formData.heightCm && formData.depthCm) ? `${formData.widthCm}×${formData.heightCm}×${formData.depthCm}cm` : '-';
-    setText('summary-weight-size', weightSize + ' / ' + sizeStr);
-    setText('summary-price', formData.price ? formData.price.toLocaleString('ko-KR') + '원' : '-');
-    setText('summary-eta-region', (formData.etaDate || '-') + ' / ' + (formData.regionType || '-'));
+    if (els.weightSize) els.weightSize.textContent = weightSize + ' / ' + sizeStr;
+    if (els.price) els.price.textContent = formData.price ? formData.price.toLocaleString('ko-KR') + '원' : '-';
+    if (els.etaRegion) els.etaRegion.textContent = (formData.etaDate || '-') + ' / ' + (formData.regionType || '-');
   }
 
   function updateNextButtonState() {
@@ -896,14 +902,19 @@
   }
 
   function updateSummary() {
-    document.getElementById('summary-branch').textContent = formData.branch || '-';
-    document.getElementById('summary-sender').textContent = formData.senderName || '-';
-    document.getElementById('summary-receiver').textContent = formData.receiverName || '-';
-    document.getElementById('summary-area').textContent = formData.receiverArea || '-';
-    document.getElementById('summary-item').textContent = formData.itemName || '-';
-    document.getElementById('summary-weight').textContent = formData.billedWeightKg ? `${formData.billedWeightKg.toFixed(2)}kg (${formData.sizeGrade})` : '-';
-    document.getElementById('summary-price').textContent = formatWon(formData.price);
-    document.getElementById('summary-eta').textContent = formData.etaDate || '-';
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    set('summary-sender', formData.senderName || '-');
+    set('summary-sender-phone', formData.senderPhone || '-');
+    set('summary-sender-address', (formData.senderAddress || '') + (formData.senderAddressDetail ? ` ${formData.senderAddressDetail}` : '') || '-');
+    set('summary-receiver', formData.receiverName || '-');
+    set('summary-receiver-phone', formData.receiverPhone || '-');
+    set('summary-receiver-address', (formData.receiverAddress || '') + (formData.receiverAddressDetail ? ` ${formData.receiverAddressDetail}` : '') || '-');
+    set('summary-item', formData.itemName || '-');
+    const ws = (formData.billedWeightKg ? formData.billedWeightKg.toFixed(2) : formData.weightKg || '-') + (formData.weightKg ? 'kg' : '');
+    const sz = (formData.widthCm && formData.heightCm && formData.depthCm) ? `${formData.widthCm}×${formData.heightCm}×${formData.depthCm}cm` : '-';
+    set('summary-weight-size', ws + ' / ' + sz);
+    set('summary-price', formData.price ? formData.price.toLocaleString('ko-KR') + '원' : '-');
+    set('summary-eta-region', (formData.etaDate || '-') + ' / ' + (formData.regionType || '-'));
   }
 
   // ============================================================
@@ -1494,6 +1505,19 @@
     formData.receiverArea = '';
     formData.staffConfirm = false;
   }
+
+  // 모든 input에 변경 감지
+  document.addEventListener('input', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') {
+      updateNextButtonState();
+    }
+  });
+
+  document.addEventListener('change', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') {
+      updateNextButtonState();
+    }
+  });
 
   window.addEventListener('hashchange', () => {
     const step = getStepFromHash();
