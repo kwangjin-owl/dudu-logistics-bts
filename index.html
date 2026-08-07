@@ -188,6 +188,20 @@
   .nav-prev:disabled { opacity: 0.4; cursor: not-allowed; }
   .nav-next { background: var(--brand); color: #fff; min-width: 140px; }
   .nav-next:disabled { background: #a9b6c4; cursor: not-allowed; }
+
+  .summary-section { position: relative; }
+  .summary-edit-btn { position: absolute; top: 0; right: 0; padding: 6px 12px; font-size: 12px; color: var(--brand); background: transparent; border: none; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+  .summary-edit-btn:hover { color: var(--brand-dark); }
+
+  .agreement-box { background: var(--warn-bg); border: 1px solid var(--warn-border); border-radius: 8px; padding: 14px; margin-top: 16px; }
+  .agreement-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+  .agreement-item:last-child { margin-bottom: 0; }
+  .agreement-item input[type="checkbox"] { margin-top: 2px; cursor: pointer; }
+  .agreement-item label { cursor: pointer; font-size: 13px; line-height: 1.5; }
+  .agreement-item.required label { color: var(--text); font-weight: 600; }
+  .agreement-item.optional label { color: var(--muted); }
+
+  .confirm-message { text-align: center; padding: 14px; background: var(--ok-bg); border: 1px solid var(--ok-border); border-radius: 8px; margin-top: 16px; color: var(--brand-dark); font-weight: 600; font-size: 13px; }
 </style>
 </head>
 <body>
@@ -351,40 +365,102 @@
     <!-- 4단계: 최종확인 -->
     <div class="modal-step" data-step="4">
       <div class="step-title">최종 확인</div>
+
       <div class="step-grid" style="grid-template-columns: 1fr">
-        <div class="field" style="background:#f5f8fc;padding:16px;border-radius:10px">
-          <p style="margin:0 0 8px;color:var(--muted);font-size:12px;font-weight:600">지점 / 보내는분</p>
-          <p style="margin:0;font-size:14px" id="summary-branch">-</p>
-          <p style="margin:4px 0 0;font-size:14px" id="summary-sender">-</p>
+        <!-- 접수 정보 -->
+        <div class="summary-section" style="background:#f5f8fc;padding:16px;border-radius:10px;position:relative">
+          <button class="summary-edit-btn" onclick="navigateToStep(2)">[수정]</button>
+          <p style="margin:0 0 8px;color:var(--muted);font-size:12px;font-weight:600">접수 정보</p>
+          <p style="margin:0;font-size:13px"><span style="color:var(--muted)">구분:</span> <span id="summary-type">-</span></p>
+          <p style="margin:4px 0 0;font-size:13px"><span style="color:var(--muted)">지점:</span> <span id="summary-branch">-</span></p>
+          <p style="margin:4px 0 0;font-size:13px"><span style="color:var(--muted)">보내는분:</span> <span id="summary-sender">-</span></p>
         </div>
-        <div class="field" style="background:#f5f8fc;padding:16px;border-radius:10px">
-          <p style="margin:0 0 8px;color:var(--muted);font-size:12px;font-weight:600">받는분 / 도착지</p>
-          <p style="margin:0;font-size:14px" id="summary-receiver">-</p>
-          <p style="margin:4px 0 0;font-size:14px" id="summary-area">-</p>
+
+        <!-- 배송지 정보 -->
+        <div class="summary-section" style="background:#f5f8fc;padding:16px;border-radius:10px;position:relative">
+          <button class="summary-edit-btn" onclick="navigateToStep(2)">[수정]</button>
+          <p style="margin:0 0 8px;color:var(--muted);font-size:12px;font-weight:600">배송지 정보</p>
+          <p style="margin:0;font-size:13px"><span style="color:var(--muted)">받는분:</span> <span id="summary-receiver">-</span></p>
+          <p style="margin:4px 0 0;font-size:13px"><span style="color:var(--muted)">전화:</span> <span id="summary-phone">-</span></p>
+          <p style="margin:4px 0 0;font-size:13px"><span style="color:var(--muted)">주소:</span> <span id="summary-address">-</span></p>
         </div>
-        <div class="field" style="background:#f5f8fc;padding:16px;border-radius:10px">
-          <p style="margin:0 0 8px;color:var(--muted);font-size:12px;font-weight:600">물품 / 무게</p>
-          <p style="margin:0;font-size:14px" id="summary-item">-</p>
-          <p style="margin:4px 0 0;font-size:14px" id="summary-weight">-</p>
+
+        <!-- 물품 정보 -->
+        <div class="summary-section" style="background:#f5f8fc;padding:16px;border-radius:10px;position:relative">
+          <button class="summary-edit-btn" onclick="navigateToStep(3)">[수정]</button>
+          <p style="margin:0 0 8px;color:var(--muted);font-size:12px;font-weight:600">물품 정보</p>
+          <p style="margin:0;font-size:13px"><span style="color:var(--muted)">물품:</span> <span id="summary-item">-</span></p>
+          <p style="margin:4px 0 0;font-size:13px"><span style="color:var(--muted)">무게:</span> <span id="summary-weight">-</span></p>
+          <p style="margin:4px 0 0;font-size:13px"><span style="color:var(--muted)">크기:</span> <span id="summary-size">-</span></p>
         </div>
-        <div class="field" style="background:#ok-bg;padding:16px;border-radius:10px;border:1px solid var(--ok-border)">
-          <p style="margin:0 0 8px;color:var(--muted);font-size:12px;font-weight:600">요금 / 도착예정</p>
-          <p style="margin:0;font-size:18px;font-weight:800;color:var(--brand-dark)" id="summary-price">-</p>
-          <p style="margin:4px 0 0;font-size:14px" id="summary-eta">-</p>
+
+        <!-- 배송료 -->
+        <div class="summary-section" style="background:var(--ok-bg);padding:16px;border-radius:10px;border:1px solid var(--ok-border);position:relative">
+          <button class="summary-edit-btn" onclick="navigateToStep(3)">[수정]</button>
+          <p style="margin:0 0 8px;color:var(--muted);font-size:12px;font-weight:600">배송료 / 도착예정</p>
+          <p style="margin:0;font-size:20px;font-weight:800;color:var(--brand-dark)" id="summary-price">-</p>
+          <p style="margin:8px 0 0;font-size:13px;color:var(--brand-dark)" id="summary-eta">-</p>
         </div>
+      </div>
+
+      <!-- 약관 동의 -->
+      <div class="agreement-box">
+        <div class="agreement-item required">
+          <input type="checkbox" id="agree-privacy" onchange="checkAgreement()">
+          <label for="agree-privacy">개인정보처리방침에 동의합니다 <span class="req">필수</span></label>
+        </div>
+        <div class="agreement-item optional">
+          <input type="checkbox" id="agree-marketing">
+          <label for="agree-marketing">마케팅 정보 수신에 동의합니다</label>
+        </div>
+      </div>
+
+      <!-- 최종 확인 메시지 -->
+      <div class="confirm-message">
+        💬 이 정보로 접수하시겠습니까?
       </div>
     </div>
 
     <!-- 5단계: 완료 -->
-    <div class="modal-step" data-step="5">
+    <div class="modal-step" data-step="5" style="text-align: center">
       <div class="receipt-card" id="receiptCard" style="display:none">
-        <div class="receipt-title">접수가 완료됐습니다</div>
-        <div class="receipt-tno" id="finalTrackingNo">운송장번호 -</div>
-        <div class="receipt-line" id="finalInfo1">-</div>
-        <div class="receipt-line" id="finalInfo2">-</div>
-        <div class="receipt-line" id="finalInfo3">-</div>
-        <div class="receipt-price" id="finalPrice">-</div>
-        <div class="receipt-line" id="finalInfo4">-</div>
+        <div class="receipt-title">✓ 접수가 완료됐습니다</div>
+
+        <div style="margin-top: 20px; padding: 20px; background: #fff; border: 2px solid var(--brand); border-radius: 10px;">
+          <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">운송장번호</div>
+          <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+            <div class="receipt-tno" id="finalTrackingNo" style="margin: 0;">-</div>
+            <button onclick="copyTrackingNo()" style="padding: 8px 14px; background: var(--brand); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;">📋 복사</button>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 16px; background: var(--ok-bg); border-radius: 8px;">
+          <div style="font-size: 18px; font-weight: 800; color: var(--brand-dark);" id="finalPrice">-</div>
+          <div style="font-size: 12px; color: var(--muted); margin-top: 8px;">배송료</div>
+        </div>
+
+        <div style="margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div style="padding: 12px; background: #f5f8fc; border-radius: 8px;">
+            <div style="font-size: 11px; color: var(--muted); margin-bottom: 4px;">도착예정</div>
+            <div style="font-size: 14px; font-weight: 600; color: var(--text);" id="finalEta">-</div>
+          </div>
+          <div style="padding: 12px; background: #f5f8fc; border-radius: 8px;">
+            <div style="font-size: 11px; color: var(--muted); margin-bottom: 4px;">배송권역</div>
+            <div style="font-size: 14px; font-weight: 600; color: var(--text);" id="finalRegion">-</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 12px; background: var(--warn-bg); border: 1px solid var(--warn-border); border-radius: 8px; font-size: 12px; color: var(--warn-text); line-height: 1.6;">
+          <div style="font-weight: 600; margin-bottom: 6px;">📌 배송 안내</div>
+          • 운송장번호를 잘 보관하세요<br>
+          • 배송은 권역별 소요일이 적용됩니다<br>
+          • 부재중 시 받는 분 전화로 연락드립니다
+        </div>
+
+        <div style="margin-top: 20px; display: flex; gap: 10px;">
+          <button onclick="resetAndGoHome()" style="flex: 1; padding: 12px; background: var(--brand); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">새로 접수</button>
+          <button onclick="alert('배송 조회 기능은 준비 중입니다.');" style="flex: 1; padding: 12px; background: #fff; color: var(--brand); border: 2px solid var(--brand); border-radius: 8px; cursor: pointer; font-weight: 600;">배송 추적</button>
+        </div>
       </div>
     </div>
 
@@ -528,6 +604,10 @@
         formData.branch = document.getElementById('branch2').value;
         formData.senderName = document.getElementById('senderName2').value;
         formData.receiverName = document.getElementById('receiverName2').value;
+        formData.receiverPhone = document.getElementById('receiverPhone2').value;
+        formData.receiverAddress = document.getElementById('receiverAddress2').value;
+        formData.receiverAddressDetail = document.getElementById('receiverAddressDetail2').value;
+        formData.specialRequest = document.getElementById('specialRequest2').value;
       } else if (currentStep === 3) {
         formData.itemName = document.getElementById('itemName3').value;
         formData.weightKg = parseFloat(document.getElementById('weightKg3').value) || null;
@@ -536,11 +616,13 @@
         formData.depthCm = parseFloat(document.getElementById('depthCm3').value) || null;
         formData.receiverArea = document.getElementById('receiverArea3').value;
         formData.staffConfirm = document.getElementById('staffConfirm3').checked;
-        updateSummary();
+      } else if (currentStep === 4) {
+        submitShipment();
+        return;
       }
       navigateToStep(currentStep + 1);
     } else if (currentStep === 5) {
-      submitShipment();
+      resetAndGoHome();
     }
   }
 
@@ -563,8 +645,82 @@
     });
 
     document.getElementById('prevBtn').disabled = step === 1;
-    document.getElementById('nextBtn').textContent = step === 5 ? '접수 완료' : '다음';
+    document.getElementById('nextBtn').disabled = step === 4 && !document.getElementById('agree-privacy').checked;
+    document.getElementById('nextBtn').textContent = step === 4 ? '접수 완료' : (step === 5 ? '접수 완료' : '다음');
+
+    if (step === 4) {
+      updateSummary();
+    }
     window.scrollTo(0, 0);
+  }
+
+  function updateSummary() {
+    const typeNames = { 'nonmember': '비회원 접수', 'member': '회원 접수', 'store': '점포 접수' };
+    document.getElementById('summary-type').textContent = typeNames[formData.receptionType] || '-';
+    document.getElementById('summary-branch').textContent = formData.branch || '-';
+    document.getElementById('summary-sender').textContent = formData.senderName || '-';
+    document.getElementById('summary-receiver').textContent = formData.receiverName || '-';
+    document.getElementById('summary-phone').textContent = formData.receiverPhone || '-';
+    document.getElementById('summary-address').textContent = (formData.receiverAddress || '-') +
+      (formData.receiverAddressDetail ? `, ${formData.receiverAddressDetail}` : '');
+    document.getElementById('summary-item').textContent = formData.itemName || '-';
+    document.getElementById('summary-weight').textContent = (formData.billedWeightKg ? formData.billedWeightKg.toFixed(2) : formData.weightKg || '-') + (formData.weightKg ? 'kg' : '');
+    document.getElementById('summary-size').textContent = (formData.widthCm && formData.heightCm && formData.depthCm)
+      ? `${formData.widthCm}×${formData.heightCm}×${formData.depthCm}cm` : '-';
+    document.getElementById('summary-price').textContent = formData.price ? formData.price.toLocaleString('ko-KR') + '원' : '-';
+    document.getElementById('summary-eta').textContent = formData.etaDate || '-';
+  }
+
+  function checkAgreement() {
+    const agreedPrivacy = document.getElementById('agree-privacy').checked;
+    document.getElementById('nextBtn').disabled = !agreedPrivacy;
+  }
+
+  function copyTrackingNo() {
+    const tno = formData.trackingNo;
+    if (!tno) return;
+    navigator.clipboard.writeText(tno).then(() => {
+      const btn = event.target;
+      const original = btn.textContent;
+      btn.textContent = '✓ 복사됨';
+      setTimeout(() => { btn.textContent = original; }, 2000);
+    });
+  }
+
+  // 2단계 요청사항 글자 수 제한
+  document.addEventListener('DOMContentLoaded', () => {
+    const textarea = document.getElementById('specialRequest2');
+    if (textarea) {
+      textarea.addEventListener('input', () => {
+        const count = textarea.value.length;
+        if (count > 200) textarea.value = textarea.value.slice(0, 200);
+        document.getElementById('charCount2').textContent = Math.min(count, 200) + '/200';
+      });
+    }
+  });
+
+  function resetAndGoHome() {
+    formData.receptionType = null;
+    formData.branch = '';
+    formData.senderName = '';
+    formData.receiverName = '';
+    formData.receiverPhone = '';
+    formData.receiverAddress = '';
+    formData.receiverAddressDetail = '';
+    formData.specialRequest = '';
+    formData.itemName = '';
+    formData.weightKg = null;
+    formData.weight = null;
+    formData.weightMode = 'manual';
+    formData.widthCm = null;
+    formData.heightCm = null;
+    formData.depthCm = null;
+    formData.receiverArea = '';
+    formData.regionType = 'general';
+    document.querySelectorAll('input[type="text"], input[type="tel"], input[type="number"], textarea, select').forEach(el => el.value = '');
+    document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
+    document.getElementById('regionDisplay').textContent = '입력 후 표시됩니다';
+    navigateToStep(1);
   }
 
   function validateCurrentStep() {
@@ -573,9 +729,12 @@
       errors.push('접수 구분을 선택하세요.');
     }
     if (currentStep === 2) {
-      if (!document.getElementById('branch2').value) errors.push('접수 지점을 입력하세요.');
+      if (!document.getElementById('branch2').value) errors.push('접수 지점을 선택하세요.');
       if (!document.getElementById('senderName2').value) errors.push('보내는 분 이름을 입력하세요.');
       if (!document.getElementById('receiverName2').value) errors.push('받는 분 이름을 입력하세요.');
+      if (!document.getElementById('receiverPhone2').value) errors.push('받는 분 전화번호를 입력하세요.');
+      if (!document.getElementById('receiverAddress2').value) errors.push('받는 분 주소를 입력하세요.');
+      if (!document.getElementById('receiverAddressDetail2').value) errors.push('상세주소를 입력하세요.');
     }
     if (currentStep === 3) {
       if (!document.getElementById('itemName3').value) errors.push('물품명을 입력하세요.');
@@ -583,6 +742,11 @@
       if (!document.getElementById('widthCm3').value || !document.getElementById('heightCm3').value || !document.getElementById('depthCm3').value)
         errors.push('가로, 세로, 높이를 모두 입력하세요.');
       if (!document.getElementById('receiverArea3').value) errors.push('도착 지역을 입력하세요.');
+    }
+    if (currentStep === 4) {
+      if (!document.getElementById('agree-privacy').checked) {
+        errors.push('개인정보처리방침에 동의하셔야 합니다.');
+      }
     }
 
     if (errors.length > 0) {
@@ -1109,15 +1273,13 @@
   }
 
   function showReceiptOnStep5(record) {
-    document.getElementById('finalTrackingNo').textContent = `운송장번호 ${record.trackingNo}`;
-    document.getElementById('finalInfo1').textContent = `접수 지점 ${record.branchName} / 보내는 분 ${record.senderName}`;
-    document.getElementById('finalInfo2').textContent = `받는 분 ${record.receiverName} / 도착 지역 ${record.receiverArea}(${record.regionType})`;
-    document.getElementById('finalInfo3').textContent = `물품 ${record.itemName} / 요금 무게 ${record.billedWeightKg}kg / 등급 ${record.sizeGrade}`;
+    document.getElementById('finalTrackingNo').textContent = record.trackingNo;
     document.getElementById('finalPrice').textContent = formatWon(record.price);
-    document.getElementById('finalInfo4').textContent = `도착 예정일 ${record.etaDate}`;
+    document.getElementById('finalEta').textContent = record.etaDate || '-';
+    const regionMap = { 'general': '일반', 'jeju': '제주', 'island': '도서산간', '일반': '일반', '제주': '제주', '도서산간': '도서산간' };
+    document.getElementById('finalRegion').textContent = regionMap[record.regionType] || record.regionType || '-';
     document.getElementById('receiptCard').style.display = 'block';
-    document.getElementById('nextBtn').textContent = '처음으로';
-    document.getElementById('nextBtn').onclick = () => { location.reload(); };
+    navigateToStep(5);
   }
 
   function resetFormData() {
