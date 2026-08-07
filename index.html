@@ -1321,7 +1321,7 @@
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
-  function submitShipment() {
+  async function submitShipment() {
     const branchCode = branchCodeOf(formData.branch);
     formData.trackingNo = nextTrackingNo(branchCode);
 
@@ -1344,8 +1344,53 @@
     };
 
     savedShipments.push(record);
+
+    // Supabase에 저장 시도
+    try {
+      await saveToSupabase(record);
+      console.log('✓ DB 저장 성공:', record.trackingNo);
+    } catch (error) {
+      console.warn('DB 저장 실패:', error.message);
+    }
+
     renderList();
     showReceiptOnStep5(record);
+  }
+
+  async function saveToSupabase(record) {
+    const SUPABASE_URL = 'https://grzxlrtyijnjgwqzcuzt.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdyenhscnR5aWpuamd3cXpjdXp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTgxMDQyNzcsImV4cCI6MTczOTY4MDI3N30.4MIVD5Uj3C7vLPxLbzN7q5mK8ZqKnJ-JZkG6T5zKw7A';
+
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/shipments`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+      },
+      body: JSON.stringify({
+        tracking_no: record.trackingNo,
+        sender_name: record.senderName,
+        receiver_name: record.receiverName,
+        receiver_area: record.receiverArea,
+        region_type: record.regionType,
+        item_name: record.itemName,
+        weight_kg: record.weightKg,
+        width_cm: record.widthCm,
+        height_cm: record.heightCm,
+        depth_cm: record.depthCm,
+        billed_weight_kg: record.billedWeightKg,
+        size_grade: record.sizeGrade,
+        price: record.price,
+        eta_date: record.etaDate,
+      })
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'DB 저장 실패');
+    }
+    return response.json();
   }
 
   function showReceiptOnStep5(record) {
