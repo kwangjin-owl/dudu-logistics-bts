@@ -125,11 +125,10 @@
   .empty-row td { text-align: center; color: var(--muted); padding: 14px; }
 
   /* 다단계 접수 */
-  .progress-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 22px; background: #f5f8fc; margin-bottom: 0; border-bottom: 1px solid var(--border); }
-  .progress-bar::after { content: attr(data-progress); font-size: 14px; font-weight: 700; color: var(--text); }
-  .progress-step { display: none; }
-  .progress-step.active { display: none; }
-  .progress-step.done { display: none; }
+  .progress-bar { display: flex; gap: 8px; align-items: center; justify-content: center; padding: 12px 16px; background: #f5f8fc; margin-bottom: 0; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  .progress-step { padding: 6px 10px; font-size: 12px; font-weight: 600; border-radius: 6px; background: transparent; border: none; color: var(--muted); cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .progress-step.active { background: var(--brand); color: #fff; }
+  .progress-step.done { color: var(--brand-dark); }
 
   .modal-container { background: var(--card); border: 1px solid var(--border); border-radius: 0 0 12px 12px; overflow: hidden; min-height: 600px; display: flex; flex-direction: column; }
   .modal-step { display: none !important; padding: 32px 40px; flex: 1; overflow-y: auto; }
@@ -472,7 +471,12 @@
     document.querySelectorAll('.modal-step').forEach(el => el.classList.remove('active'));
     document.querySelector(`.modal-step[data-step="${step}"]`).classList.add('active');
 
-    document.querySelector('.progress-bar').innerHTML = `<div></div><div style="font-size:14px;font-weight:700;color:var(--text)">${step}/5</div>`;
+    document.querySelectorAll('.progress-step').forEach(el => el.classList.remove('active', 'done'));
+    document.querySelectorAll('.progress-step').forEach((el, idx) => {
+      const stepNum = idx + 1;
+      if (stepNum === step) el.classList.add('active');
+      else if (stepNum < step) el.classList.add('done');
+    });
 
     document.getElementById('prevBtn').disabled = step === 1;
     document.getElementById('nextBtn').textContent = step === 5 ? '접수 완료' : '다음';
